@@ -1,5 +1,7 @@
 package com.booking.domain;
 
+import lombok.Data;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,6 +29,7 @@ import javax.persistence.Table;
  */
 
 @Entity
+@Data
 @Table(name = "t_room")
 public class Room {
 	@Id
@@ -48,94 +51,6 @@ public class Room {
 	//房型与订单建立双向关联关系，由多的一方订单维护外键
 	@OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<Order> orders = new HashSet<Order>();
-
-	public Long getRid() {
-		return rid;
-	}
-
-	public void setRid(Long rid) {
-		this.rid = rid;
-	}
-
-	public String getRname() {
-		return rname;
-	}
-
-	public void setRname(String rname) {
-		this.rname = rname;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public String getBreakfast() {
-		return breakfast;
-	}
-
-	public void setBreakfast(String breakfast) {
-		this.breakfast = breakfast;
-	}
-
-	public String getCancel() {
-		return cancel;
-	}
-
-	public void setCancel(String cancel) {
-		this.cancel = cancel;
-	}
-
-	public Integer getPeople() {
-		return people;
-	}
-
-	public void setPeople(Integer people) {
-		this.people = people;
-	}
-
-	public Double getPrice() {
-		return price;
-	}
-
-	public void setPrice(Double price) {
-		this.price = price;
-	}
-
-	public String getAssitions() {
-		return assitions;
-	}
-
-	public void setAssitions(String assitions) {
-		this.assitions = assitions;
-	}
-
-	public String getImg() {
-		return img;
-	}
-
-	public void setImg(String img) {
-		this.img = img;
-	}
-
-	public Hotel getHotel() {
-		return hotel;
-	}
-
-	public void setHotel(Hotel hotel) {
-		this.hotel = hotel;
-	}
-
-	public Set<Order> getOrders() {
-		return orders;
-	}
-
-	public void setOrders(Set<Order> orders) {
-		this.orders = orders;
-	}
 
 	@Override
 	public String toString() {

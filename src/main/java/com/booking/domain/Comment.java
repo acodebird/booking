@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -30,6 +31,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 */
 
 @Entity
+@Data
 @Table(name = "t_comment")
 public class Comment {
 	@Id
@@ -38,6 +40,10 @@ public class Comment {
 	private String content; //评论内容
 	private Float rate; //评论等级
 	private Integer type; //评论类别（0表示差评、1表示中评、2表示好评）
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@JsonFormat(pattern="yyyy/MM/dd HH:mm:ss",timezone="GMT+8")
+	@DateTimeFormat(pattern="yy/MM/dd HH:mm:ss")
 	private Date date; //评论时间
 	
 	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
@@ -51,58 +57,7 @@ public class Comment {
 	@OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	@JoinColumn(name = "oid")
 	private Order order; //评论所属订单
-	
-	public Long getCid() {
-		return cid;
-	}
-	public void setCid(Long cid) {
-		this.cid = cid;
-	}
-	public String getContent() {
-		return content;
-	}
-	public void setContent(String content) {
-		this.content = content;
-	}
-	public Float getRate() {
-		return rate;
-	}
-	public void setRate(Float rate) {
-		this.rate = rate;
-	}
-	public Integer getType() {
-		return type;
-	}
-	public void setType(Integer type) {
-		this.type = type;
-	}
-	@Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(pattern="yyyy/MM/dd HH:mm:ss",timezone="GMT+8")
-	@DateTimeFormat(pattern="yy/MM/dd HH:mm:ss")
-	public Date getDate() {
-		return date;
-	}
-	public void setDate(Date date) {
-		this.date = date;
-	}
-	public User getUser() {
-		return user;
-	}
-	public void setUser(User user) {
-		this.user = user;
-	}
-	public Hotel getHotel() {
-		return hotel;
-	}
-	public void setHotel(Hotel hotel) {
-		this.hotel = hotel;
-	}
-	public Order getOrder() {
-		return order;
-	}
-	public void setOrder(Order order) {
-		this.order = order;
-	}
+
 	@Override
 	public String toString() {
 		return "Comment [cid=" + cid + ", content=" + content + ", rate=" + rate + ", type=" + type + ", date=" + date

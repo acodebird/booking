@@ -1,5 +1,7 @@
 package com.booking.domain;
 
+import lombok.Data;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,6 +28,7 @@ import javax.validation.constraints.Size;
   */
 
 @Entity
+@Data
 @Table(name = "t_hotel")
 public class Hotel {
 	@Id
@@ -52,79 +55,7 @@ public class Hotel {
 	//酒店与房型建立双向关联关系，由多的一方房型维护外键
 	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<Room> rooms = new HashSet<Room>();
-	
-	public Long getHid() {
-		return hid;
-	}
-	public void setHid(Long hid) {
-		this.hid = hid;
-	}
-	public String getHname() {
-		return hname;
-	}
-	public void setHname(String hname) {
-		this.hname = hname;
-	}
-	public String getAddress() {
-		return address;
-	}
-	public void setAddress(String address) {
-		this.address = address;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	public String getFacilities() {
-		return facilities;
-	}
-	public void setFacilities(String facilities) {
-		this.facilities = facilities;
-	}
-	public String getService() {
-		return service;
-	}
-	public void setService(String service) {
-		this.service = service;
-	}
-	public String getPhone() {
-		return phone;
-	}
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-	public String getType() {
-		return type;
-	}
-	public void setType(String type) {
-		this.type = type;
-	}
-	public Float getRate() {
-		return rate;
-	}
-	public void setRate(Float rate) {
-		this.rate = rate;
-	}
-	public Set<Order> getOrders() {
-		return orders;
-	}
-	public void setOrders(Set<Order> orders) {
-		this.orders = orders;
-	}
-	public Set<Comment> getComments() {
-		return comments;
-	}
-	public void setComments(Set<Comment> comments) {
-		this.comments = comments;
-	}
-	public Set<Room> getRooms() {
-		return rooms;
-	}
-	public void setRooms(Set<Room> rooms) {
-		this.rooms = rooms;
-	}
+
 	@Override
 	public String toString() {
 		return "Hotel [hid=" + hid + ", hname=" + hname + ", address=" + address + ", description=" + description
