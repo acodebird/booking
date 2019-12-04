@@ -56,7 +56,7 @@ public class Room {
 	public String toString() {
 		return "Room [rid=" + rid + ", rname=" + rname + ", type=" + type + ", breakfast=" + breakfast + ", cancel="
 				+ cancel + ", people=" + people + ", price=" + price + ", assitions=" + assitions + ", img=" + img
-				+ "]";
+				+ ", hid=" + hotel.getHid() + "]";
 	}
 	
 }
