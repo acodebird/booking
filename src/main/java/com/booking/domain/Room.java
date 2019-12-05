@@ -1,6 +1,8 @@
 package com.booking.domain;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,6 +18,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 /*`rid` int(11) NOT NULL AUTO_INCREMENT COMMENT '房型id',
   `rname` varchar(255) NOT NULL COMMENT '房型名',
   `type` varchar(255) NOT NULL COMMENT '房型类别',
@@ -29,7 +33,9 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Data
+//@Data(@Data可能会出现toString()/hashCode()/equals()死循环，具体解析请看https://www.jianshu.com/p/61d4e28ee254)
+@Setter
+@Getter
 @Table(name = "t_room")
 public class Room {
 	@Id
@@ -44,12 +50,13 @@ public class Room {
 	private String assitions; //房型详情
 	private String img; //房型图片
 	
-	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "hid")
 	private Hotel hotel; //房型所属酒店
 	
 	//房型与订单建立双向关联关系，由多的一方订单维护外键
 	@OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonBackReference
 	private Set<Order> orders = new HashSet<Order>();
 
 	@Override

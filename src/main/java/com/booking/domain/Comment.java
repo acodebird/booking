@@ -1,6 +1,7 @@
 package com.booking.domain;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -16,6 +17,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -31,7 +35,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 */
 
 @Entity
-@Data
+//@Data(@Data可能会出现toString()/hashCode()/equals()死循环，具体解析请看https://www.jianshu.com/p/61d4e28ee254)
+@Setter
+@Getter
 @Table(name = "t_comment")
 public class Comment {
 	@Id
@@ -46,15 +52,15 @@ public class Comment {
 	@DateTimeFormat(pattern="yy/MM/dd HH:mm:ss")
 	private Date date; //评论时间
 	
-	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "uid")
 	private User user; //评论所属用户
 	
-	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "hid")
 	private Hotel hotel; //评论所属酒店
 	
-	@OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+	@OneToOne
 	@JoinColumn(name = "oid")
 	private Order order; //评论所属订单
 

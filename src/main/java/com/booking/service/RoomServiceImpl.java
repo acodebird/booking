@@ -1,9 +1,12 @@
 package com.booking.service;
 
-import com.booking.domain.Room;
-import com.booking.repository.RoomRepository;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.booking.domain.Room;
+import com.booking.repository.RoomRepository;
 
 @Service
 public class RoomServiceImpl implements RoomService {
@@ -14,4 +17,19 @@ public class RoomServiceImpl implements RoomService {
     public void save(Room room) {
         roomRepository.save(room);
     }
+    
+    @Override
+	public void deleteById(Long rid) {
+    	roomRepository.deleteById(rid);
+	}
+
+	@Override
+	public Room findById(Long rid) {
+		return roomRepository.findById(rid).get();
+	}
+
+	@Override
+	public List<Room> findAll() {
+		return (List<Room>) roomRepository.findAll();
+	}
 }
