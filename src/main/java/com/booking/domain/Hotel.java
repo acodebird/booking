@@ -1,6 +1,8 @@
 package com.booking.domain;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +17,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 /*`hid` int(11) NOT NULL AUTO_INCREMENT COMMENT '酒店主键',
   `hname` varchar(255) NOT NULL COMMENT '酒店名称',
   `address` varchar(255) NOT NULL COMMENT '酒店地址',
@@ -28,7 +32,9 @@ import javax.validation.constraints.Size;
   */
 
 @Entity
-@Data
+//@Data(@Data可能会出现toString()/hashCode()/equals()死循环，具体解析请看https://www.jianshu.com/p/61d4e28ee254)
+@Getter
+@Setter
 @Table(name = "t_hotel")
 public class Hotel {
 	@Id
@@ -46,14 +52,17 @@ public class Hotel {
 	
 	//酒店与订单建立双向关联关系，由多的一方订单维护外键
 	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonBackReference
 	private Set<Order> orders = new HashSet<Order>();
 	
 	//酒店与评论建立双向关联关系，由多的一方评论维护外键
 	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonBackReference
 	private Set<Comment> comments = new HashSet<Comment>();
 	
 	//酒店与房型建立双向关联关系，由多的一方房型维护外键
 	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonBackReference
 	private Set<Room> rooms = new HashSet<Room>();
 
 	@Override

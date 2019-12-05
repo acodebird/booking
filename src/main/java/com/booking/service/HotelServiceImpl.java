@@ -2,6 +2,9 @@ package com.booking.service;
 
 import com.booking.domain.Hotel;
 import com.booking.repository.HotelRepository;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +24,12 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
-    public Iterable<Hotel> findAll() {
-        return hotelRepository.findAll();
+    public List<Hotel> findAll() {
+        return (List<Hotel>) hotelRepository.findAll();
     }
+
+	@Override
+	public void deleteById(Long hid) {
+		hotelRepository.deleteById(hid);
+	}
 }

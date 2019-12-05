@@ -1,6 +1,7 @@
 package com.booking.domain;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,6 +18,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -35,7 +39,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  */
 
 @Entity
-@Data
+//@Data(@Data可能会出现toString()/hashCode()/equals()死循环，具体解析请看https://www.jianshu.com/p/61d4e28ee254)
+@Setter
+@Getter
 @Table(name = "t_order")
 public class Order {
 	@Id
@@ -65,15 +71,15 @@ public class Order {
 
 	private Integer status; //订单状态（0表示未支付、1表示未完成、2表示完成）
 	
-	@ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "hid")
 	private Hotel hotel; //订单所属酒店
 	
-	@ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "rid")
 	private Room room; //订单房型
 	
-	@ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "uid")
 	private User user; //订单所属用户
 	

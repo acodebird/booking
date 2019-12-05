@@ -10,6 +10,7 @@ import com.booking.domain.User;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @SpringBootTest
@@ -62,17 +63,68 @@ public class TestService {
 			hotel.setRate(4.8f);
 			hotel.setOrders(null);
 			hotel.setComments(null);
-//			hotel.setRooms(null);
 			hotelService.save(hotel);
 		}
     }
-
+	
+	/**
+	 * 测试删除酒店级联删除房型
+	 */
+	@Test
+	public void testDeleteHotel() {
+		hotelService.deleteById(3L);
+	}
+	/*
+	 * 测试根据id查询酒店以及更新酒店
+	 * 
+	 */
+	@Test
+	public void testFindByIdAndUpdateHotel() {
+		Hotel hotel = hotelService.findById(1L);
+		System.out.println(hotel);
+		hotel.setAddress("广东省东莞市大学路test0号");
+		hotel.setPhone("13113112115");
+		System.out.println(hotel);
+		hotelService.save(hotel);
+	}
+	
+	/**
+	 * 测试删除房型
+	 */
+	@Test
+	public void testDeleteRoom() {
+		roomService.deleteById(3L);
+	}
+	
+	/**
+	 * 测试根据id查询房型以及更新房型
+	 */
+	@Test
+	public void testFindByIdAndUpdateRoom() {
+		Room room = roomService.findById(1L);
+		System.out.println(room);
+		room.setPeople(6);
+		room.setType("亲子房");
+		System.out.println(room);
+		roomService.save(room);
+	}
+	/**
+	 * 测试查找所有房型
+	 */
+	@Test
+	public void testFindAllRoom() {
+		Iterable<Room> rooms = roomService.findAll();
+		rooms.forEach(room -> {
+			System.out.println(room);
+		});
+	}
+	
 	/**
 	 * 房型数据注入
 	 */
 	@Test
 	public void testSaveRoom() {
-		Iterable<Hotel> allHotel = hotelService.findAll();
+		List<Hotel> allHotel = hotelService.findAll();
 		allHotel.forEach(hotel -> {
 			for (int i = 0; i < 4; i++) {
 				Room room = new Room();
@@ -95,7 +147,6 @@ public class TestService {
 				}
 				room.setImg("xxxxxxxxxx");
 				room.setOrders(null);
-//				room.setHotel(hotelService.findById(hotel.getHid()));
 				room.setHotel(hotel);
 				roomService.save(room);
 			}

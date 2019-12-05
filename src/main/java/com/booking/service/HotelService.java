@@ -1,11 +1,12 @@
 package com.booking.service;
 
-import com.booking.domain.Hotel;
+import java.util.List;
 
-import java.util.Optional;
+import com.booking.domain.Hotel;
 
 public interface HotelService {
     void save(Hotel hotel);
+    void deleteById(Long hid);
     Hotel findById(Long hid);
-    Iterable<Hotel> findAll();
+    List<Hotel> findAll();
 }
