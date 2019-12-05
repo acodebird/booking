@@ -2,15 +2,10 @@ package com.booking.service;
 
 import com.booking.domain.Hotel;
 import com.booking.domain.Room;
+import com.booking.domain.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import com.booking.domain.User;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @SpringBootTest
 public class TestService {
@@ -62,7 +57,7 @@ public class TestService {
 			hotel.setRate(4.8f);
 			hotel.setOrders(null);
 			hotel.setComments(null);
-//			hotel.setRooms(null);
+			hotel.setRooms(null);
 			hotelService.save(hotel);
 		}
     }
