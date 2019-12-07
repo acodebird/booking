@@ -63,6 +63,7 @@ public class TestService {
 			hotel.setRate(4.8f);
 			hotel.setOrders(null);
 			hotel.setComments(null);
+			hotel.setImg("xxxxx");
 			hotelService.save(hotel);
 		}
     }
