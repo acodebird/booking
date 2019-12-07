@@ -2,16 +2,12 @@ package com.booking.service;
 
 import com.booking.domain.Hotel;
 import com.booking.domain.Room;
+import com.booking.domain.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.booking.domain.User;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @SpringBootTest
 public class TestService {
@@ -27,14 +23,14 @@ public class TestService {
 	@Test
 	public void test1() {
 		User user = new User();
-		user.setUname("老王");
+		user.setUname("小泽又沐风");
 		user.setSalt("aaa");
 		user.setUpassword("12345");
-		user.setEmail("acodebird@163.com");
+		user.setEmail("2388623483@qq.com");
 		user.setEnable(true);
 		user.setIcon("xxxx");
 		user.setType(1);
-		user.setTelephone("13112124724");
+		user.setTelephone("12345678910");
 		user.setComments(null);
 		user.setOrders(null);
 		userService.save(user);
@@ -64,6 +60,7 @@ public class TestService {
 			hotel.setOrders(null);
 			hotel.setComments(null);
 			hotel.setImg("xxxxx");
+			hotel.setRooms(null);
 			hotelService.save(hotel);
 		}
     }
@@ -73,11 +70,12 @@ public class TestService {
 	 */
 	@Test
 	public void testDeleteHotel() {
-		hotelService.deleteById(3L);
+		hotelService.deleteById(43L);
 	}
-	/*
+
+	/**
 	 * 测试根据id查询酒店以及更新酒店
-	 * 
+	 *
 	 */
 	@Test
 	public void testFindByIdAndUpdateHotel() {
@@ -94,7 +92,7 @@ public class TestService {
 	 */
 	@Test
 	public void testDeleteRoom() {
-		roomService.deleteById(3L);
+		roomService.deleteById(7L);
 	}
 	
 	/**

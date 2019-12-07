@@ -17,6 +17,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.booking.enums.OrderStatusEnum;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -69,7 +70,7 @@ public class Order {
 	@Column(name = "end_time")
 	private Date endTime; //离店时间
 
-	private Integer status; //订单状态（0表示未支付、1表示未完成、2表示完成）
+	private OrderStatusEnum status; //订单状态（0表示已取消、1表示已完成、2表示待付款、3表示待入住）
 	
 	@ManyToOne
 	@JoinColumn(name = "hid")
