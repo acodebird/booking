@@ -1,21 +1,15 @@
 package com.booking.web;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.DateUtil;
 import com.booking.domain.Order;
-import com.booking.domain.OrderDTO;
+import com.booking.dto.OrderDTO;
 import com.booking.service.OrderService;
 import com.booking.utils.ResponseEntity;
 import com.booking.utils.STablePageRequest;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 @RestController
@@ -65,7 +59,13 @@ public class OrderController {
         return ResponseEntity.ofSuccess().status(HttpStatus.OK);
     }
 
-
+    /**
+     * 编辑订单
+     *
+     * @param id
+     * @param orderDTO
+     * @return
+     */
     @PutMapping("/{id}")
     public ResponseEntity update(@PathVariable("id") Long id, @RequestBody OrderDTO orderDTO) {
         Order target = orderService.findById(id);

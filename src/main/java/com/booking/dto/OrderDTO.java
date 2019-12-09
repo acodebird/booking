@@ -1,5 +1,7 @@
-package com.booking.domain;
+package com.booking.dto;
 
+import com.booking.domain.Hotel;
+import com.booking.domain.Room;
 import com.booking.enums.OrderStatusEnum;
 import lombok.Data;
 

@@ -62,9 +62,9 @@ public class Hotel implements Serializable {
 //	private Set<Comment> comments = new HashSet<Comment>();
 //
 	//酒店与房型建立双向关联关系，由多的一方房型维护外键
-	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JsonBackReference
-	private Set<Room> rooms = new HashSet<Room>();
+//	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//	@JsonBackReference
+//	private Set<Room> rooms = new HashSet<Room>();
 
 	@Override
 	public String toString() {
