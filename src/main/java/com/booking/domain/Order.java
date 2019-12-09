@@ -1,5 +1,6 @@
 package com.booking.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
@@ -18,6 +19,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.booking.enums.OrderStatusEnum;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -44,13 +46,16 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Setter
 @Getter
 @Table(name = "t_order")
-public class Order {
+public class Order implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long oid; //订单id
 	private Integer count; //订单房型数量
 	private Double price; //订单房型单价
-	private Double totalprice; //订单总价
+	private Double totalPrice; //订单总价
+	private String checkInPerson; //入住人（可以与订单所属用户不一致）
+	private String remark; //订单备注
+	private OrderStatusEnum status; //订单状态（0表示已取消、1表示已完成、2表示待付款、3表示待入住）
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@JsonFormat(pattern="yyyy/MM/dd HH:mm:ss",timezone="GMT+8")
@@ -70,8 +75,7 @@ public class Order {
 	@Column(name = "end_time")
 	private Date endTime; //离店时间
 
-	private OrderStatusEnum status; //订单状态（0表示已取消、1表示已完成、2表示待付款、3表示待入住）
-	
+
 	@ManyToOne
 	@JoinColumn(name = "hid")
 	private Hotel hotel; //订单所属酒店
@@ -84,13 +88,14 @@ public class Order {
 	@JoinColumn(name = "uid")
 	private User user; //订单所属用户
 	
-	//订单与评论建立双向一对一关系，由评论维护外键
-	@OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private Comment comment;
+//	//订单与评论建立双向一对一关系，由评论维护外键
+//	@OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//	@JsonBackReference
+//	private Comment comment;
 
 	@Override
 	public String toString() {
-		return "Order [oid=" + oid + ", count=" + count + ", price=" + price + ", totalprice=" + totalprice
+		return "Order [oid=" + oid + ", count=" + count + ", price=" + price + ", totalprice=" + totalPrice
 				+ ", createTime=" + createTime + ", startTime=" + startTime + ", endTime=" + endTime + ", status="
 				+ status + "]";
 	}

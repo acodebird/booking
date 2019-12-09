@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,7 +37,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Getter
 @Setter
 @Table(name = "t_hotel")
-public class Hotel {
+public class Hotel implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long hid; //酒店主键
@@ -50,16 +51,16 @@ public class Hotel {
 	private String type; //酒店类型
 	private Float rate; //酒店评分
 	
-	//酒店与订单建立双向关联关系，由多的一方订单维护外键
-	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JsonBackReference
-	private Set<Order> orders = new HashSet<Order>();
-	
-	//酒店与评论建立双向关联关系，由多的一方评论维护外键
-	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JsonBackReference
-	private Set<Comment> comments = new HashSet<Comment>();
-	
+//	//酒店与订单建立双向关联关系，由多的一方订单维护外键
+//	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//	@JsonBackReference
+//	private Set<Order> orders = new HashSet<Order>();
+//
+//	//酒店与评论建立双向关联关系，由多的一方评论维护外键
+//	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//	@JsonBackReference
+//	private Set<Comment> comments = new HashSet<Comment>();
+//
 	//酒店与房型建立双向关联关系，由多的一方房型维护外键
 	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonBackReference

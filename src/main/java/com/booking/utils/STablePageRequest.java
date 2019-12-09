@@ -26,7 +26,7 @@ public class STablePageRequest {
     private int pageNo = 1;
     private int pageSize = 10;
     //排序条件
-    private String sortField = "oid";
+    private String sortField = "createTime";
     private String sortOrder = "descend";
 
     //3.

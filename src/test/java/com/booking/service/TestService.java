@@ -31,8 +31,8 @@ public class TestService {
 		user.setIcon("xxxx");
 		user.setType(1);
 		user.setTelephone("12345678910");
-		user.setComments(null);
-		user.setOrders(null);
+//		user.setComments(null);
+//		user.setOrders(null);
 		userService.save(user);
 	}
 	
@@ -57,9 +57,9 @@ public class TestService {
 			hotel.setPhone("12345678910");
 			hotel.setType("高档型");
 			hotel.setRate(4.8f);
-			hotel.setOrders(null);
-			hotel.setComments(null);
-			hotel.setRooms(null);
+//			hotel.setOrders(null);
+//			hotel.setComments(null);
+//			hotel.setRooms(null);
 			hotelService.save(hotel);
 		}
     }
@@ -69,7 +69,7 @@ public class TestService {
 	 */
 	@Test
 	public void testDeleteHotel() {
-		hotelService.deleteById(43L);
+		hotelService.deleteById(1L);
 	}
 
 	/**
@@ -91,7 +91,7 @@ public class TestService {
 	 */
 	@Test
 	public void testDeleteRoom() {
-		roomService.deleteById(7L);
+		roomService.deleteById(1L);
 	}
 	
 	/**
@@ -144,7 +144,7 @@ public class TestService {
 					room.setAssitions("床型：双床1.8米,面积：30㎡,不允许加床,外窗");
 				}
 				room.setImg("xxxxxxxxxx");
-				room.setOrders(null);
+//				room.setOrders(null);
 				room.setHotel(hotel);
 				roomService.save(room);
 			}

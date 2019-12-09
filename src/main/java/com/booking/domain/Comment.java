@@ -1,5 +1,6 @@
 package com.booking.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
@@ -39,7 +40,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Setter
 @Getter
 @Table(name = "t_comment")
-public class Comment {
+public class Comment implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long cid; //评论id
