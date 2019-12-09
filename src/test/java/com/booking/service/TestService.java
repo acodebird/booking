@@ -60,6 +60,10 @@ public class TestService {
 //			hotel.setOrders(null);
 //			hotel.setComments(null);
 //			hotel.setRooms(null);
+//			hotel.setOrders(null);
+//			hotel.setComments(null);
+			hotel.setImg("xxxxx");
+//			hotel.setRooms(null);
 			hotelService.save(hotel);
 		}
     }

@@ -50,6 +50,7 @@ public class Hotel implements Serializable {
 	private String phone; //酒店电话
 	private String type; //酒店类型
 	private Float rate; //酒店评分
+	private String img; //酒店图片
 	
 //	//酒店与订单建立双向关联关系，由多的一方订单维护外键
 //	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
