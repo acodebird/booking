@@ -1,9 +1,5 @@
 package com.booking.domain;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,7 +13,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+import com.booking.enums.HotelTypeEnum;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /*`hid` int(11) NOT NULL AUTO_INCREMENT COMMENT '酒店主键',
   `hname` varchar(255) NOT NULL COMMENT '酒店名称',
@@ -47,7 +47,7 @@ public class Hotel {
 	private String service; //酒店服务
 	@Size(min=11,max=11)
 	private String phone; //酒店电话
-	private String type; //酒店类型
+	private HotelTypeEnum type; //酒店类型(APARTMENT：公寓, HOMESTAY：民宿, HOSTEL：青旅, ECONOMY：经济连锁, HIGNEND：高级连锁)
 	private Float rate; //酒店评分
 	private String img; //酒店图片
 	

@@ -1,16 +1,22 @@
 package com.booking.service;
 
-import com.booking.domain.Hotel;
-import com.booking.domain.Room;
-import com.booking.domain.User;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import com.booking.domain.Hotel;
+import com.booking.domain.Room;
+import com.booking.domain.User;
+import com.booking.enums.HotelTypeEnum;
+import com.booking.enums.RoomTypeEnum;
+import com.booking.utils.STablePageRequest;
 
 @SpringBootTest
-public class TestService {
+public class TestHotelService {
 	@Autowired
 	private UserService userService;
 
@@ -47,7 +53,7 @@ public class TestService {
 	 */
 	@Test
     public void testSaveHotel() {
-		for (int i = 0; i < 20; i++) {
+		for (int i = 20; i < 50; i++) {
 			Hotel hotel = new Hotel();
 			hotel.setHname("维也纳国际酒店" + i);
 			hotel.setAddress("广东省东莞市大学路" + i + "号");
@@ -55,11 +61,11 @@ public class TestService {
 			hotel.setFacilities("停车场,餐厅");
 			hotel.setService("接待外宾，叫醒服务");
 			hotel.setPhone("12345678910");
-			hotel.setType("高档型");
+			hotel.setType(HotelTypeEnum.APARTMENT);
 			hotel.setRate(4.8f);
 			hotel.setOrders(null);
 			hotel.setComments(null);
-			hotel.setImg("xxxxx");
+			hotel.setImg("/upload/hotel/e3f2b968-e07b-4dfa-b04a-accfb19431bf.jpg");
 			hotel.setRooms(null);
 			hotelService.save(hotel);
 		}
@@ -103,7 +109,7 @@ public class TestService {
 		Room room = roomService.findById(1L);
 		System.out.println(room);
 		room.setPeople(6);
-		room.setType("亲子房");
+		room.setType(RoomTypeEnum.STANDARD);
 		System.out.println(room);
 		roomService.save(room);
 	}
@@ -123,13 +129,15 @@ public class TestService {
 	 */
 	@Test
 	public void testSaveRoom() {
-		List<Hotel> allHotel = hotelService.findAll();
+		STablePageRequest sTablePageRequest = new STablePageRequest();
+		sTablePageRequest.setSortField("hid");
+		Page<Hotel> allHotel = hotelService.findAll(sTablePageRequest.getPageable());
 		allHotel.forEach(hotel -> {
 			for (int i = 0; i < 4; i++) {
 				Room room = new Room();
 				if (i % 2 == 0) {
 					room.setRname("精品单床房" + i);
-					room.setType("单人房");
+					room.setType(RoomTypeEnum.SUPERIOR);
 					room.setBreakfast("含早");
 					room.setCancel("免费取消");
 					room.setPeople(2);
@@ -137,7 +145,7 @@ public class TestService {
 					room.setAssitions("床型：单床1.8米,面积：12㎡,不允许加床,外窗");
 				} else {
 					room.setRname("豪华双床房" + i);
-					room.setType("双人房");
+					room.setType(RoomTypeEnum.DELUXE);
 					room.setBreakfast("不含早");
 					room.setCancel("限时取消");
 					room.setPeople(4);

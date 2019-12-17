@@ -1,9 +1,5 @@
 package com.booking.domain;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,7 +14,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.booking.enums.RoomTypeEnum;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /*`rid` int(11) NOT NULL AUTO_INCREMENT COMMENT '房型id',
   `rname` varchar(255) NOT NULL COMMENT '房型名',
@@ -42,7 +42,7 @@ public class Room {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long rid; //房型id
 	private String rname; //房型名
-	private String type; //房型类别
+	private RoomTypeEnum type; //房型类别（STANDARD：标准房；SUPERIOR：高级房；DELUXE：豪华房；BUSINESS：商务房）
 	private String breakfast; //房型早餐
 	private String cancel; //房型取消策略
 	private Integer people; //房型人数上限

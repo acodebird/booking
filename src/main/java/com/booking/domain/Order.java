@@ -1,7 +1,6 @@
 package com.booking.domain;
 
 import java.util.Date;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,14 +16,13 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.booking.enums.OrderStatusEnum;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.booking.enums.OrderStatusEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /*  `oid` int(11) NOT NULL AUTO_INCREMENT COMMENT '订单id',
   `count` int(11) NOT NULL COMMENT '订单房型数量',
