@@ -1,6 +1,7 @@
 package com.booking.web;
 
 import com.booking.domain.Order;
+import com.booking.dto.OrderDTO;
 import com.booking.service.OrderService;
 import com.booking.utils.ResponseEntity;
 import com.booking.utils.STablePageRequest;
@@ -19,6 +20,7 @@ public class OrderController {
 
     /**
      * 获取一页订单
+     *
      * @param pageable
      * @return
      */
@@ -33,6 +35,7 @@ public class OrderController {
 
     /**
      * 删除一条订单
+     *
      * @param id
      * @return
      */
@@ -44,6 +47,7 @@ public class OrderController {
 
     /**
      * 批量删除订单
+     *
      * @param ids
      * @return
      */
@@ -53,5 +57,32 @@ public class OrderController {
         if (null != orders)
             orderService.deleteAll(orders);
         return ResponseEntity.ofSuccess().status(HttpStatus.OK);
+    }
+
+    /**
+     * 编辑订单
+     *
+     * @param id
+     * @param orderDTO
+     * @return
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity update(@PathVariable("id") Long id, @RequestBody OrderDTO orderDTO) {
+        Order target = orderService.findById(id);
+        if (target != null) {
+            target.setStartTime(orderDTO.getStartTime());
+            target.setEndTime(orderDTO.getEndTime());
+            target.setPrice(orderDTO.getPrice());
+            target.setCount(orderDTO.getCount());
+            target.setTotalPrice(orderDTO.getTotalPrice());
+            target.setStatus(orderDTO.getStatus());
+            target.setCheckInPerson(orderDTO.getCheckInPerson());
+            target.setRemark(orderDTO.getRemark());
+            target.getHotel().setHname(orderDTO.getHotel().getHname());
+            target.getRoom().setRname(orderDTO.getRoom().getRname());
+            orderService.save(target);
+        }
+
+        return ResponseEntity.ofSuccess().status(HttpStatus.OK).data("更新成功");
     }
 }

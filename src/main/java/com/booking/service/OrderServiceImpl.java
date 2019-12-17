@@ -14,6 +14,11 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
+    @Override
+    public Order findById(Long id) {
+        return orderRepository.findById(id).get();
+    }
+
     /**
      * 更新或新增订单
      * @param order
@@ -30,7 +35,14 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public Page<Order> findAll(Pageable pageable) {
-        return orderRepository.findAll(pageable);
+        Page<Order> orders = orderRepository.findAll(pageable);
+        //清空用户的密码和盐
+        orders.forEach(order -> {
+            order.getUser().setSalt(null);
+            order.getUser().setUpassword(null);
+        });
+
+        return orders;
     }
 
     /**

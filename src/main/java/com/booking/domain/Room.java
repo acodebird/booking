@@ -1,21 +1,16 @@
 package com.booking.domain;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.booking.enums.RoomTypeEnum;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -37,7 +32,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Table(name = "t_room")
-public class Room {
+public class Room implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long rid; //房型id
@@ -54,16 +49,16 @@ public class Room {
 	@JoinColumn(name = "hid")
 	private Hotel hotel; //房型所属酒店
 	
-	//房型与订单建立双向关联关系，由多的一方订单维护外键
-	@OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JsonBackReference
-	private Set<Order> orders = new HashSet<Order>();
+//	//房型与订单建立双向关联关系，由多的一方订单维护外键
+//	@OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//	@JsonBackReference
+//	private Set<Order> orders = new HashSet<Order>();
 
-	@Override
-	public String toString() {
-		return "Room [rid=" + rid + ", rname=" + rname + ", type=" + type + ", breakfast=" + breakfast + ", cancel="
-				+ cancel + ", people=" + people + ", price=" + price + ", assitions=" + assitions + ", img=" + img
-				+ ", hid=" + hotel.getHid() + "]";
-	}
+//	@Override
+//	public String toString() {
+//		return "Room [rid=" + rid + ", rname=" + rname + ", type=" + type + ", breakfast=" + breakfast + ", cancel="
+//				+ cancel + ", people=" + people + ", price=" + price + ", assitions=" + assitions + ", img=" + img
+//				+ ", hid=" + hotel.getHid() + "]";
+//	}
 	
 }

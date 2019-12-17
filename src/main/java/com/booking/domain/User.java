@@ -1,5 +1,6 @@
 package com.booking.domain;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,7 +35,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Table(name = "t_user")
-public class User {
+public class User implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long uid; //用户主键
@@ -48,15 +49,15 @@ public class User {
 	private String icon; //用户头像
 	private Boolean enable; //用户可用性（0表示不可用，1表示可用）
 	
-	//用户与订单建立双向关联关系，由多的一方订单维护外键
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JsonBackReference
-	private Set<Order> orders = new HashSet<Order>();
-	
-	//用户与评论建立双向关联关系，由多的一方评论维护外键
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JsonBackReference
-	private Set<Comment> comments = new HashSet<Comment>();
+//	//用户与订单建立双向关联关系，由多的一方订单维护外键
+//	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//	@JsonBackReference
+//	private Set<Order> orders = new HashSet<Order>();
+//
+//	//用户与评论建立双向关联关系，由多的一方评论维护外键
+//	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//	@JsonBackReference
+//	private Set<Comment> comments = new HashSet<Comment>();
 
 	@Override
 	public String toString() {

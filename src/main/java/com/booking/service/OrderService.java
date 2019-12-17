@@ -8,6 +8,13 @@ import java.util.List;
 
 public interface OrderService {
     /**
+     * 根据id查询一条订单
+     * @param id
+     * @return
+     */
+    Order findById(Long id);
+
+    /**
      * 更新或新增订单
      * @param order
      */

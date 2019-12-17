@@ -1,5 +1,6 @@
 package com.booking.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -35,7 +36,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Table(name = "t_comment")
-public class Comment {
+public class Comment implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long cid; //评论id

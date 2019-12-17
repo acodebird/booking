@@ -1,20 +1,15 @@
 package com.booking.domain;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 import com.booking.enums.HotelTypeEnum;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -36,7 +31,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "t_hotel")
-public class Hotel {
+public class Hotel implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long hid; //酒店主键
@@ -51,20 +46,20 @@ public class Hotel {
 	private Float rate; //酒店评分
 	private String img; //酒店图片
 	
-	//酒店与订单建立双向关联关系，由多的一方订单维护外键
-	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JsonBackReference
-	private Set<Order> orders = new HashSet<Order>();
-	
-	//酒店与评论建立双向关联关系，由多的一方评论维护外键
-	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JsonBackReference
-	private Set<Comment> comments = new HashSet<Comment>();
-	
+//	//酒店与订单建立双向关联关系，由多的一方订单维护外键
+//	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//	@JsonBackReference
+//	private Set<Order> orders = new HashSet<Order>();
+//
+//	//酒店与评论建立双向关联关系，由多的一方评论维护外键
+//	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//	@JsonBackReference
+//	private Set<Comment> comments = new HashSet<Comment>();
+//
 	//酒店与房型建立双向关联关系，由多的一方房型维护外键
-	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JsonBackReference
-	private Set<Room> rooms = new HashSet<Room>();
+//	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//	@JsonBackReference
+//	private Set<Room> rooms = new HashSet<Room>();
 
 	@Override
 	public String toString() {
