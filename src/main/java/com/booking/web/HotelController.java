@@ -66,7 +66,6 @@ public class HotelController {
      */
     @PostMapping
     public ResponseEntity addHotel(@RequestBody Hotel hotel) {
-    	System.out.println(hotel.toString());
     	hotelService.save(hotel);
     	return ResponseEntity.ofSuccess().status(HttpStatus.OK);
     }

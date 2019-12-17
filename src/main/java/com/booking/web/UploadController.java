@@ -33,7 +33,6 @@ public class UploadController {
 	    if (!folder.exists()) {
 	        folder.mkdirs();
 	    }
-	    System.out.println(realPath);
 	    String oldName = file.getOriginalFilename();
 	    String newName = UUID.randomUUID().toString() + oldName.substring(oldName.lastIndexOf("."));
 	    try {
@@ -44,7 +43,6 @@ public class UploadController {
 	    String url = "/upload/"+ directoryName + "/" + newName;
 	    UploadResponse data = new UploadResponse();
 	    data.setImgUrl(url);
-	    System.out.println(url);
 	    return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(data);
     }
 	
