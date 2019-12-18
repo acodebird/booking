@@ -2,6 +2,7 @@ package com.booking.web;
 
 import com.booking.domain.Order;
 import com.booking.dto.OrderDTO;
+import com.booking.dto.OrderQueryDTO;
 import com.booking.service.OrderService;
 import com.booking.utils.ResponseEntity;
 import com.booking.utils.STablePageRequest;
@@ -25,11 +26,8 @@ public class OrderController {
      * @return
      */
     @GetMapping
-    public ResponseEntity<Page<Order>> findAll(STablePageRequest pageable) {
-
-        Page<Order> page = Page.empty(pageable.getPageable());
-        page = orderService.findAll(pageable.getPageable());
-
+    public ResponseEntity<Page<Order>> findAll(STablePageRequest pageable, OrderQueryDTO orderQueryDTO) {
+        Page<Order> page = orderService.findAll(OrderQueryDTO.getWhereClause(orderQueryDTO), pageable.getPageable());
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(page);
     }
 

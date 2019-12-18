@@ -3,6 +3,7 @@ package com.booking.service;
 import com.booking.domain.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 
@@ -21,11 +22,12 @@ public interface OrderService {
     void save(Order order);
 
     /**
-     * 查询一页订单
+     * 条件查询一页订单
+     * @param spec
      * @param pageable
      * @return
      */
-    Page<Order> findAll(Pageable pageable);
+    Page<Order> findAll(Specification<Order> spec, Pageable pageable);
 
     /**
      * 根据id删除一条订单

@@ -8,6 +8,9 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 接口类：用于编辑订单
+ */
 @Data
 public class OrderDTO implements Serializable {
     private Hotel hotel;

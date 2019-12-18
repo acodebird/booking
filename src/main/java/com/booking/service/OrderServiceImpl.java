@@ -5,7 +5,9 @@ import com.booking.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class OrderServiceImpl implements OrderService {
      * @param order
      */
     @Override
+    @Transactional
     public void save(Order order) {
         orderRepository.save(order);
     }
@@ -34,8 +37,8 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public Page<Order> findAll(Pageable pageable) {
-        Page<Order> orders = orderRepository.findAll(pageable);
+    public Page<Order> findAll(Specification<Order> spec, Pageable pageable) {
+        Page<Order> orders = orderRepository.findAll(spec, pageable);
         //清空用户的密码和盐
         orders.forEach(order -> {
             order.getUser().setSalt(null);
@@ -50,6 +53,7 @@ public class OrderServiceImpl implements OrderService {
      * @param id
      */
     @Override
+    @Transactional
     public void deleteById(Long id) {
         orderRepository.deleteById(id);
     }
@@ -69,6 +73,7 @@ public class OrderServiceImpl implements OrderService {
      * @param orders
      */
     @Override
+    @Transactional
     public void deleteAll(List<Order> orders) {
         orderRepository.deleteAll(orders);
     }
