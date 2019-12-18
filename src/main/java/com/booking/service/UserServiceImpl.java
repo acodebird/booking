@@ -51,6 +51,7 @@ public class UserServiceImpl implements UserService {
 	public Page<User> findAll(Specification<User> spec, Pageable pageable){
 		return userRepository.findAll(spec, pageable);
 	}
+
 	public Page<User> findAll(Pageable pageable){
 		return userRepository.findAll(pageable);
 	}

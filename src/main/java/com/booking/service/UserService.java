@@ -28,7 +28,6 @@ public interface UserService {
 	public Page<User> findAll(Pageable pageable);
 	@Transactional(readOnly=true)
 	public List<User> findAllById(List<Long> uids);
-
 	@Transactional(readOnly=true)
 	public boolean existsById(Long uid);
 	@Transactional(readOnly=true)

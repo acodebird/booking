@@ -27,6 +27,7 @@ public class STablePageRequest {
     private int pageSize = 10;
     //排序条件
     private String sortField = "createTime";
+    private String sortUserField="uid";
     private String sortOrder = "descend";
 
     //3.
@@ -41,6 +42,29 @@ public class STablePageRequest {
             //否则 new 升序  排序对象Sort
             if (!sortOrder.equals("descend")) {
                 pageSort = new Sort(Sort.Direction.ASC, sortField);
+            }
+
+            //如果排序条件 不为null 或 ""  分页 + 排序
+            pageable = PageRequest.of(pageNo - 1, pageSize, pageSort);
+
+        } else {
+            //如果排序条件 为null 或 "" 则 只分页 不排序
+            pageable = PageRequest.of(pageNo - 1, pageSize);
+        }
+
+        return pageable;
+    }
+    public Pageable getUserPageable() {
+        //前端分页 默认第一页为 1  ， Spring data jpa Pageable 默认第一页为0
+        Pageable pageable = null;
+
+        //如果排序条件不为null 或 ""
+        if (StringUtils.isNotBlank(sortUserField) || StringUtils.isNotBlank(sortOrder)) {
+            //new 一个默认 降序 排序对象Sort
+            Sort pageSort = new Sort(Sort.Direction.DESC, sortUserField);
+            //否则 new 升序  排序对象Sort
+            if (!sortOrder.equals("descend")) {
+                pageSort = new Sort(Sort.Direction.ASC, sortUserField);
             }
 
             //如果排序条件 不为null 或 ""  分页 + 排序

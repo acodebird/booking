@@ -9,12 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import com.booking.utils.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/user")
 public class UserController {
     @Autowired
@@ -71,7 +70,7 @@ public class UserController {
     @GetMapping
     public ResponseEntity<Page<User>> findAll(UserQueryDTO query , STablePageRequest spageable) {
         System.out.println("findAll");
-        Page<User> page = userService.findAll(UserQueryDTO.getWhereClause(query), spageable.getPageable());
+        Page<User> page = userService.findAll(UserQueryDTO.getWhereClause(query), spageable.getUserPageable());
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(page);
     }
 }

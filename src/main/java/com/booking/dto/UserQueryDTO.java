@@ -11,15 +11,14 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
 public class UserQueryDTO {
-    private String UserNumber;
-    private Date createTimeStart;
-    private Date createTimeEnd;
+    private String uname;
+    private Integer type ;
+    private Boolean enable;
 
     // 2.根据查询条件是否有值 - 动态拼接动态查询条件对象 Specification<T> spec
     @SuppressWarnings("serial")
@@ -29,17 +28,17 @@ public class UserQueryDTO {
             public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 
                 List<Predicate> predicate = new ArrayList<>();
-                if (StringUtils.isNotBlank(userQueryDTO.getUserNumber())) {
-                    predicate.add(cb.like(root.get("UserNumber").as(String.class),
-                            "%" + userQueryDTO.getUserNumber() + "%"));
+                if (StringUtils.isNotBlank(userQueryDTO.getUname())) {
+                    predicate.add(cb.like(root.get("uname").as(String.class),
+                            "%" + userQueryDTO.getUname() + "%"));
                 }
-                if (null != userQueryDTO.getCreateTimeStart()) {
-                    predicate.add(cb.greaterThanOrEqualTo(root.get("createTime").as(Date.class),
-                            userQueryDTO.getCreateTimeStart()));
+                if (null != userQueryDTO.getType()) {
+                    predicate.add(cb.equal(root.get("type").as(Integer.class),
+                            userQueryDTO.getType()));
                 }
-                if (null != userQueryDTO.getCreateTimeEnd()) {
-                    predicate.add(cb.lessThanOrEqualTo(root.get("createTime").as(Date.class),
-                            userQueryDTO.getCreateTimeEnd()));
+                if (null != userQueryDTO.getEnable()) {
+                    predicate.add(cb.equal(root.get("enable").as(Boolean.class),
+                            userQueryDTO.getEnable()));
                 }
 
                 Predicate[] pre = new Predicate[predicate.size()];
