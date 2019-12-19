@@ -1,26 +1,24 @@
 package com.booking.dto;
 
+import com.booking.domain.Order;
 import com.booking.domain.User;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
 public class UserQueryDTO {
+    private List<Long> uids=new ArrayList<Long>();
     private String uname;
     private Integer type ;
     private Boolean enable;
 
-    // 2.根据查询条件是否有值 - 动态拼接动态查询条件对象 Specification<T> spec
     @SuppressWarnings("serial")
     public static Specification<User> getWhereClause(final UserQueryDTO userQueryDTO) {
         return new Specification<User>() {
@@ -47,4 +45,24 @@ public class UserQueryDTO {
         };
     }
 
+    @SuppressWarnings("serial")
+    public static Specification<Order> getOrderSepcByUser(final UserQueryDTO userQueryDTO) {
+         return new Specification<Order>() {
+            public Predicate toPredicate(Root<Order> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                List<Predicate> predicate = new ArrayList<>();
+                List<Long> uids=userQueryDTO.getUids();
+                if(!uids.isEmpty()){
+                    Join<Order,User> join=root.join("user", JoinType.LEFT);
+                    CriteriaBuilder.In<Long> in=cb.in(join.get("uid").as(Long.class));
+                    for(Long uid:uids){
+                        in.value(uid);
+                    }
+                    predicate.add(in);
+                    //predicate.add(cb.equal(join.get("uid").as(Long.class),uid));
+                }
+                Predicate[] pre = new Predicate[predicate.size()];
+                return query.where(predicate.toArray(pre)).getRestriction();// and
+            }
+        };
+    }
 }

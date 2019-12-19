@@ -1,7 +1,9 @@
 package com.booking.service;
 
+import com.booking.domain.Order;
 import com.booking.domain.User;
 import com.booking.dto.UserQueryDTO;
+import com.booking.enums.OrderStatusEnum;
 import com.booking.utils.ResponseEntity;
 import com.booking.utils.STablePageRequest;
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +23,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -28,6 +31,15 @@ import java.util.List;
 public class TestUserService {
     @Autowired
     UserService userService;
+
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private HotelService hotelService;
+
+    @Autowired
+    private RoomService roomService;
 
     @Test
     public void saveUsers(){
@@ -50,5 +62,40 @@ public class TestUserService {
         STablePageRequest pageable=new STablePageRequest();
         UserQueryDTO queryDTO=new UserQueryDTO();
         Page<User> page = userService.findAll(queryDTO.getWhereClause(queryDTO),pageable.getUserPageable());
+    }
+    @Test
+    public void findOrderByUser(){
+        UserQueryDTO queryDTO=new UserQueryDTO();
+        List<Long> uids=queryDTO.getUids();
+        uids.add(1L);
+        uids.add(2L);
+        queryDTO.setUids(uids);
+        List<Order> orders= userService.findAllOrderByUser(queryDTO.getOrderSepcByUser(queryDTO));
+        for(Order o : orders){
+            System.out.println(o);
+        }
+    }
+
+    @Test
+    public void testSaveOrder() {
+        for (int i = 1; i <= 5; i++) {
+            Order order = new Order();
+            order.setCount(2);
+            order.setPrice(129.9);
+            order.setTotalPrice(order.getCount() * order.getPrice());
+            order.setCreateTime(new Date());
+            order.setStartTime(new Date());
+            order.setEndTime(new Date());
+            if (i % 4 == 0) order.setStatus(OrderStatusEnum.UNPAY);
+            else if (i % 3 == 0) order.setStatus(OrderStatusEnum.UNUSE);
+            else if (i % 2 == 0) order.setStatus(OrderStatusEnum.SUCCESS);
+            else order.setStatus(OrderStatusEnum.CANCEL);
+            order.setHotel(hotelService.findById(2L));
+            order.setRoom(roomService.findById(10L));
+            order.setUser(userService.getUserById(3L));
+            order.setRemark("无烟房,外窗");
+            order.setCheckInPerson(order.getUser().getUname());
+            orderService.save(order);
+        }
     }
 }

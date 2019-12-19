@@ -1,5 +1,6 @@
 package com.booking.service;
 
+import com.booking.domain.Order;
 import com.booking.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,10 +11,10 @@ import java.util.List;
 
 public interface UserService {
 	// 根据用户 id 获取用户信息
-	@Transactional(readOnly=true)
 	public User getUserById(Long uid);
 	// 增加用户\更新用户
 	public User save (User user);
+	public void saveAll (List<User> users);
 	// 删除用户
 	public void deleteById(Long uid);
 	public void delete(User user);
@@ -22,14 +23,13 @@ public interface UserService {
 	public void deleteAll(Long[] uids);
 	public void deleteAllById(List<Long> uids);
 	// 获取用户列表
-	@Transactional(readOnly=true)
 	public Page<User> findAll(Specification<User> spec, Pageable pageable);
-	@Transactional(readOnly=true)
 	public Page<User> findAll(Pageable pageable);
-	@Transactional(readOnly=true)
 	public List<User> findAllById(List<Long> uids);
-	@Transactional(readOnly=true)
+	// 获取用户订单
+	public List<Order> findAllOrderByUser(Specification<Order> spec);
+	public Page<Order> findAllOrder(Specification<Order> spec, Pageable pageable);
+
 	public boolean existsById(Long uid);
-	@Transactional(readOnly=true)
 	public long count();
 }

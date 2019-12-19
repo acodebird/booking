@@ -1,5 +1,7 @@
 package com.booking.service;
 
+import com.booking.domain.Order;
+import com.booking.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.booking.domain.User;
 import com.booking.repository.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,14 +20,20 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private OrderRepository orderRepository;
 
 	// 根据用户 id 获取用户信息
+	@Transactional(readOnly=true)
 	public User getUserById(Long uid){
 		return userRepository.findById(uid).get();
 	}
 	// 增加用户\更新用户
 	public User save (User user){
 		return userRepository.save(user);
+	}
+	public void saveAll (List<User> users){
+		userRepository.saveAll(users);
 	}
 	// 删除用户
 	public void deleteById(Long uid){
@@ -48,20 +57,34 @@ public class UserServiceImpl implements UserService {
 		userRepository.deleteAll(users);
 	}
 	// 获取用户列表
+	@Transactional(readOnly=true)
 	public Page<User> findAll(Specification<User> spec, Pageable pageable){
 		return userRepository.findAll(spec, pageable);
 	}
+	// 获取用户订单
+	@Transactional(readOnly=true)
+	public List<Order> findAllOrderByUser(Specification<Order> spec){
+		return orderRepository.findAll(spec);
+	}
+	@Transactional(readOnly=true)
+	public Page<Order> findAllOrder(Specification<Order> spec, Pageable pageable){
+		return orderRepository.findAll(spec,pageable);
+	}
 
+	@Transactional(readOnly=true)
 	public Page<User> findAll(Pageable pageable){
 		return userRepository.findAll(pageable);
 	}
+	@Transactional(readOnly=true)
 	public List<User> findAllById(List<Long> uids){
 		return (List<User>) userRepository.findAllById(uids);
 	}
 
+	@Transactional(readOnly=true)
 	public boolean existsById(Long uid){
 		return userRepository.existsById(uid);
 	}
+	@Transactional(readOnly=true)
 	public long count() {
 		return userRepository.count();
 	}
