@@ -39,8 +39,8 @@ public class OrderQueryDTO implements Serializable {
                 //拼接酒店名称
                 if (StringUtils.isNotBlank(orderQueryDTO.getHName()) && !"ALL".equals(orderQueryDTO.getHName())) {
                     predicate.add(criteriaBuilder.equal(root.get("hotel").get("hname").as(String.class),
-                            orderQueryDTO.getHName()));
-                }
+                        orderQueryDTO.getHName()));
+            }
                 //拼接价格区间
                 if (null != orderQueryDTO.getMaxPrice() || null != orderQueryDTO.getMinPrice()) {
                     if (null != orderQueryDTO.getMinPrice() && null == orderQueryDTO.getMaxPrice()) {
