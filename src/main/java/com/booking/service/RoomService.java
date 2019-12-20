@@ -9,4 +9,5 @@ public interface RoomService {
     void deleteById(Long rid);
     Room findById(Long rid);
     List<Room> findAll();
+    List<Room> findByHid(Long hid);
 }

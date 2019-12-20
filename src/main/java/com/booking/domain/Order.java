@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.booking.enums.PayTypeEnum;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.booking.enums.OrderStatusEnum;
@@ -48,8 +49,10 @@ public class Order implements Serializable {
 	private Double price; //订单房型单价
 	private Double totalPrice; //订单总价
 	private String checkInPerson; //入住人（可以与订单所属用户不一致）
+	private String telephone; //入住人的联系电话（可以与订单所属用户不一致）
 	private String remark; //订单备注
 	private OrderStatusEnum status; //订单状态（0表示已取消、1表示已完成、2表示待付款、3表示待入住）
+	private PayTypeEnum payType; //支付方式(0为门店现付即现金支付、1为线上预付)
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@JsonFormat(pattern="yyyy/MM/dd HH:mm:ss",timezone="GMT+8")

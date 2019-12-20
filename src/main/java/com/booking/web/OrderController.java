@@ -1,16 +1,26 @@
 package com.booking.web;
 
 import com.booking.domain.Order;
-import com.booking.dto.OrderDTO;
+import com.booking.domain.Room;
+import com.booking.domain.User;
+import com.booking.dto.OrderConfirmDTO;
+import com.booking.dto.OrderEditDTO;
 import com.booking.dto.OrderQueryDTO;
+import com.booking.enums.OrderStatusEnum;
 import com.booking.service.OrderService;
+import com.booking.service.RoomService;
+import com.booking.service.UserService;
 import com.booking.utils.ResponseEntity;
 import com.booking.utils.STablePageRequest;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -18,6 +28,36 @@ import java.util.List;
 public class OrderController {
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private RoomService roomService;
+
+    @Autowired
+    private UserService userService;
+
+    /**
+     * 订单预订
+     * @param orderConfirmDTO
+     * @param request
+     * @return
+     */
+    @PutMapping
+    public ResponseEntity add(@RequestBody OrderConfirmDTO orderConfirmDTO, HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute("user");
+//        User user = userService.findById(1L);
+        Order order = new Order();
+        order.setUser(user);
+        Room room = roomService.findById(orderConfirmDTO.getRid());
+        order.setRoom(room);
+        order.setHotel(room.getHotel());
+        order.setCreateTime(new Date());
+        order.setPrice(room.getPrice());
+        order.setStatus(OrderStatusEnum.UNPAY);
+        BeanUtils.copyProperties(orderConfirmDTO, order);
+        orderService.save(order);
+
+        return ResponseEntity.ofSuccess().status(HttpStatus.OK).data("预订成功");
+    }
 
     /**
      * 获取一页订单
@@ -27,6 +67,9 @@ public class OrderController {
      */
     @GetMapping
     public ResponseEntity<Page<Order>> findAll(STablePageRequest pageable, OrderQueryDTO orderQueryDTO) {
+        if (StringUtils.isBlank(pageable.getSortField())) {
+            pageable.setSortField("createTime");
+        }
         Page<Order> page = orderService.findAll(OrderQueryDTO.getWhereClause(orderQueryDTO), pageable.getPageable());
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(page);
     }
@@ -61,23 +104,23 @@ public class OrderController {
      * 编辑订单
      *
      * @param id
-     * @param orderDTO
+     * @param orderEditDTO
      * @return
      */
     @PutMapping("/{id}")
-    public ResponseEntity update(@PathVariable("id") Long id, @RequestBody OrderDTO orderDTO) {
+    public ResponseEntity update(@PathVariable("id") Long id, @RequestBody OrderEditDTO orderEditDTO) {
         Order target = orderService.findById(id);
         if (target != null) {
-            target.setStartTime(orderDTO.getStartTime());
-            target.setEndTime(orderDTO.getEndTime());
-            target.setPrice(orderDTO.getPrice());
-            target.setCount(orderDTO.getCount());
-            target.setTotalPrice(orderDTO.getTotalPrice());
-            target.setStatus(orderDTO.getStatus());
-            target.setCheckInPerson(orderDTO.getCheckInPerson());
-            target.setRemark(orderDTO.getRemark());
-            target.getHotel().setHname(orderDTO.getHotel().getHname());
-            target.getRoom().setRname(orderDTO.getRoom().getRname());
+            target.setStartTime(orderEditDTO.getStartTime());
+            target.setEndTime(orderEditDTO.getEndTime());
+            target.setPrice(orderEditDTO.getPrice());
+            target.setCount(orderEditDTO.getCount());
+            target.setTotalPrice(orderEditDTO.getTotalPrice());
+            target.setStatus(orderEditDTO.getStatus());
+            target.setCheckInPerson(orderEditDTO.getCheckInPerson());
+            target.setRemark(orderEditDTO.getRemark());
+            target.getHotel().setHname(orderEditDTO.getHotel().getHname());
+            target.getRoom().setRname(orderEditDTO.getRoom().getRname());
             orderService.save(target);
         }
 

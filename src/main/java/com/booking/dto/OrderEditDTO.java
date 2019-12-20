@@ -12,7 +12,7 @@ import java.util.Date;
  * 接口类：用于编辑订单
  */
 @Data
-public class OrderDTO implements Serializable {
+public class OrderEditDTO implements Serializable {
     private Hotel hotel;
     private Room room;
     private String checkInPerson;

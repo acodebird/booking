@@ -1,7 +1,12 @@
 package com.booking.web;
 
 import java.util.Arrays;
+import java.util.List;
 
+import com.booking.domain.Room;
+import com.booking.dto.HotelDetailDTO;
+import com.booking.service.RoomService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -25,7 +30,10 @@ import com.booking.utils.STablePageRequest;
 @RequestMapping(value="/hotelManage")
 public class HotelController {
 	@Autowired
-	HotelService hotelService;
+	private HotelService hotelService;
+
+	@Autowired
+    private RoomService roomService;
 	
 	/**
      * 获取一页酒店
@@ -34,6 +42,9 @@ public class HotelController {
      */
     @GetMapping
     public ResponseEntity<Page<Order>> getHotelPage(STablePageRequest pageable) {
+        if (StringUtils.isBlank(pageable.getSortField())) {
+            pageable.setSortField("rate");
+        }
         Page<Hotel> page = Page.empty(pageable.getPageable());
         page = hotelService.findAll(pageable.getPageable());
 
@@ -68,5 +79,16 @@ public class HotelController {
     public ResponseEntity addHotel(@RequestBody Hotel hotel) {
     	hotelService.save(hotel);
     	return ResponseEntity.ofSuccess().status(HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<HotelDetailDTO> getHotelDetail(@PathVariable("id") Long id) {
+        Hotel hotel = hotelService.findById(id);
+        List<Room> rooms = roomService.findByHid(hotel.getHid());
+        HotelDetailDTO hotelDetailDTO = new HotelDetailDTO();
+        hotelDetailDTO.setHotel(hotel);
+        hotelDetailDTO.setRooms(rooms);
+
+        return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(hotelDetailDTO);
     }
 }
