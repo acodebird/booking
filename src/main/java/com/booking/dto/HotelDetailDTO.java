@@ -8,6 +8,9 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 接口类：酒店详情的数据载体(未完成)
+ */
 @Data
 public class HotelDetailDTO {
     private Hotel hotel;
