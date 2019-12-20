@@ -1,6 +1,8 @@
 package com.booking.service;
 
+import com.booking.domain.Comment;
 import com.booking.domain.Order;
+import com.booking.repository.CommentRepository;
 import com.booking.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +24,8 @@ public class UserServiceImpl implements UserService {
 	private UserRepository userRepository;
 	@Autowired
 	private OrderRepository orderRepository;
+	@Autowired
+	private CommentRepository commentRepository;
 
 	// 根据用户 id 获取用户信息
 	@Transactional(readOnly=true)
@@ -63,12 +67,19 @@ public class UserServiceImpl implements UserService {
 	}
 	// 获取用户订单
 	@Transactional(readOnly=true)
-	public List<Order> findAllOrderByUser(Specification<Order> spec){
+	public List<Order> findAllOrder(Specification<Order> spec){
 		return orderRepository.findAll(spec);
 	}
 	@Transactional(readOnly=true)
 	public Page<Order> findAllOrder(Specification<Order> spec, Pageable pageable){
 		return orderRepository.findAll(spec,pageable);
+	}
+	//获取用户评论
+	public List<Comment> findAllComment(Specification<Comment> spec){
+		return commentRepository.findAll(spec);
+	}
+	public Page<Comment> findAllComment(Specification<Comment> spec, Pageable pageable){
+		return commentRepository.findAll(spec,pageable);
 	}
 
 	@Transactional(readOnly=true)

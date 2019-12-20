@@ -4,25 +4,17 @@ import com.booking.domain.Order;
 import com.booking.domain.User;
 import com.booking.dto.UserQueryDTO;
 import com.booking.enums.OrderStatusEnum;
-import com.booking.utils.ResponseEntity;
+
 import com.booking.utils.STablePageRequest;
-import org.apache.commons.lang3.StringUtils;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
+
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -70,7 +62,7 @@ public class TestUserService {
         uids.add(1L);
         uids.add(2L);
         queryDTO.setUids(uids);
-        List<Order> orders= userService.findAllOrderByUser(queryDTO.getOrderSepcByUser(queryDTO));
+        List<Order> orders= userService.findAllOrder(queryDTO.getOrderSepcByUser(queryDTO));
         for(Order o : orders){
             System.out.println(o);
         }

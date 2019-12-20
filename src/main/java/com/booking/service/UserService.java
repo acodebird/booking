@@ -1,5 +1,6 @@
 package com.booking.service;
 
+import com.booking.domain.Comment;
 import com.booking.domain.Order;
 import com.booking.domain.User;
 import org.springframework.data.domain.Page;
@@ -27,8 +28,11 @@ public interface UserService {
 	public Page<User> findAll(Pageable pageable);
 	public List<User> findAllById(List<Long> uids);
 	// 获取用户订单
-	public List<Order> findAllOrderByUser(Specification<Order> spec);
+	public List<Order> findAllOrder(Specification<Order> spec);
 	public Page<Order> findAllOrder(Specification<Order> spec, Pageable pageable);
+	//获取用户评论
+	public List<Comment> findAllComment(Specification<Comment> spec);
+	public Page<Comment> findAllComment(Specification<Comment> spec, Pageable pageable);
 
 	public boolean existsById(Long uid);
 	public long count();

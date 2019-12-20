@@ -1,5 +1,6 @@
 package com.booking.dto;
 
+import com.booking.domain.Comment;
 import com.booking.domain.Order;
 import com.booking.domain.User;
 import lombok.Getter;
@@ -53,6 +54,27 @@ public class UserQueryDTO {
                 List<Long> uids=userQueryDTO.getUids();
                 if(!uids.isEmpty()){
                     Join<Order,User> join=root.join("user", JoinType.LEFT);
+                    CriteriaBuilder.In<Long> in=cb.in(join.get("uid").as(Long.class));
+                    for(Long uid:uids){
+                        in.value(uid);
+                    }
+                    predicate.add(in);
+                    //predicate.add(cb.equal(join.get("uid").as(Long.class),uid));
+                }
+                Predicate[] pre = new Predicate[predicate.size()];
+                return query.where(predicate.toArray(pre)).getRestriction();// and
+            }
+        };
+    }
+
+    @SuppressWarnings("serial")
+    public static Specification<Comment> getCommentSepcByUser(final UserQueryDTO userQueryDTO) {
+        return new Specification<Comment>() {
+            public Predicate toPredicate(Root<Comment> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                List<Predicate> predicate = new ArrayList<>();
+                List<Long> uids=userQueryDTO.getUids();
+                if(!uids.isEmpty()){
+                    Join<Comment,User> join=root.join("user", JoinType.LEFT);
                     CriteriaBuilder.In<Long> in=cb.in(join.get("uid").as(Long.class));
                     for(Long uid:uids){
                         in.value(uid);

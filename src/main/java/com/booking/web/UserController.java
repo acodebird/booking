@@ -1,8 +1,10 @@
 package com.booking.web;
 
+import com.booking.domain.Comment;
 import com.booking.domain.Order;
 import com.booking.domain.User;
 import com.booking.dto.UserQueryDTO;
+import com.booking.service.CommentService;
 import com.booking.service.OrderService;
 import com.booking.service.UserService;
 import com.booking.utils.STablePageRequest;
@@ -22,6 +24,8 @@ public class UserController {
     UserService userService;
     @Autowired
     OrderService orderService;
+    @Autowired
+    CommentService commentService;
 
     // 根据用户 id 获取用户信息
     @GetMapping("/{uid}")
@@ -69,7 +73,9 @@ public class UserController {
             List<Long> uids=dto.getUids();
             uids.add(uid);
             dto.setUids(uids);
-            List<Order> orders=userService.findAllOrderByUser(UserQueryDTO.getOrderSepcByUser(dto));
+            List<Order> orders=userService.findAllOrder(UserQueryDTO.getOrderSepcByUser(dto));
+            List<Comment> comments=userService.findAllComment(UserQueryDTO.getCommentSepcByUser(dto));
+            commentService.deleteAll(comments);
             orderService.deleteAll(orders);
             userService.deleteById(uid);
         }
@@ -83,7 +89,9 @@ public class UserController {
         if (uids != null) {
             UserQueryDTO dto=new UserQueryDTO();
             dto.setUids(uids);
-            List<Order> orders=userService.findAllOrderByUser(UserQueryDTO.getOrderSepcByUser(dto));
+            List<Order> orders=userService.findAllOrder(UserQueryDTO.getOrderSepcByUser(dto));
+            List<Comment> comments=userService.findAllComment(UserQueryDTO.getCommentSepcByUser(dto));
+            commentService.deleteAll(comments);
             orderService.deleteAll(orders);
             userService.deleteAllById(uids);
         }
