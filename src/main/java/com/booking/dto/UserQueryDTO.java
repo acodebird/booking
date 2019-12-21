@@ -17,6 +17,7 @@ import java.util.List;
 public class UserQueryDTO {
     private List<Long> uids=new ArrayList<Long>();
     private String uname;
+    private String email;
     private Integer type ;
     private Boolean enable;
 
@@ -30,6 +31,10 @@ public class UserQueryDTO {
                 if (StringUtils.isNotBlank(userQueryDTO.getUname())) {
                     predicate.add(cb.like(root.get("uname").as(String.class),
                             "%" + userQueryDTO.getUname() + "%"));
+                }
+                if (null != userQueryDTO.getEmail()) {
+                    predicate.add(cb.equal(root.get("email").as(String.class),
+                            userQueryDTO.getEmail()));
                 }
                 if (null != userQueryDTO.getType()) {
                     predicate.add(cb.equal(root.get("type").as(Integer.class),

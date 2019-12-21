@@ -2,9 +2,13 @@ package com.booking.service;
 
 import com.booking.domain.Comment;
 import com.booking.domain.Order;
+import com.booking.dto.UserQueryDTO;
 import com.booking.repository.CommentRepository;
 import com.booking.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -27,12 +31,26 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private CommentRepository commentRepository;
 
+	public static final String EHCACHE_NAME = "user";
+
 	// 根据用户 id 获取用户信息
 	@Transactional(readOnly=true)
+	@Cacheable(value=EHCACHE_NAME,key="'user_'+#uid")
 	public User getUserById(Long uid){
 		return userRepository.findById(uid).get();
 	}
+	// 根据用户 email 获取用户信息
+	@Transactional(readOnly=true)
+	@Cacheable(value=EHCACHE_NAME,key="'user_'+#uid")
+	public User findByEmail(Specification<User> spec){
+		List<User>users=userRepository.findAll(spec);
+		if(null==users||users.size()<1){
+			return new User();
+		}
+		return users.get(0);
+	}
 	// 增加用户\更新用户
+	@CachePut(value=EHCACHE_NAME,key="'user_'+#user.getUid()")
 	public User save (User user){
 		return userRepository.save(user);
 	}
@@ -40,6 +58,7 @@ public class UserServiceImpl implements UserService {
 		userRepository.saveAll(users);
 	}
 	// 删除用户
+	@CacheEvict(value=EHCACHE_NAME,key="'user_'+#uid")
 	public void deleteById(Long uid){
 		userRepository.deleteById(uid);
 	}
@@ -65,6 +84,19 @@ public class UserServiceImpl implements UserService {
 	public Page<User> findAll(Specification<User> spec, Pageable pageable){
 		return userRepository.findAll(spec, pageable);
 	}
+	@Transactional(readOnly=true)
+	public Page<User> findAll(Pageable pageable){
+		return userRepository.findAll(pageable);
+	}
+	@Transactional(readOnly=true)
+	public List<User> findAll(){
+		return (List<User>) userRepository.findAll();
+	}
+	@Transactional(readOnly=true)
+	public List<User> findAllById(List<Long> uids){
+		return (List<User>) userRepository.findAllById(uids);
+	}
+
 	// 获取用户订单
 	@Transactional(readOnly=true)
 	public List<Order> findAllOrder(Specification<Order> spec){
@@ -83,17 +115,14 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Transactional(readOnly=true)
-	public Page<User> findAll(Pageable pageable){
-		return userRepository.findAll(pageable);
-	}
-	@Transactional(readOnly=true)
-	public List<User> findAllById(List<Long> uids){
-		return (List<User>) userRepository.findAllById(uids);
-	}
-
-	@Transactional(readOnly=true)
 	public boolean existsById(Long uid){
 		return userRepository.existsById(uid);
+	}
+	@Transactional(readOnly=true)
+	public boolean existsByEmail(String email){
+		UserQueryDTO dto=new UserQueryDTO();
+		dto.setEmail(email);
+		return userRepository.findAll(UserQueryDTO.getWhereClause(dto)).size()>0?true:false;
 	}
 	@Transactional(readOnly=true)
 	public long count() {
