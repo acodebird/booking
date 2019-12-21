@@ -104,7 +104,6 @@ public class LoginServiceImpl implements LoginService {
             System.out.println("email:"+email);
             System.out.println("密码："+password);
             password = sha.sha2(password + user.getSalt());
-
             if (password.equals(user.getUpassword())&&user.getEnable()) {
                 element=new Element(user.getUid(),user);
                 cacheManager.getCache(EHCACHE_LOGIN).put(element);

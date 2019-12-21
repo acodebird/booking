@@ -106,6 +106,7 @@ public class UserController {
     @GetMapping
     public ResponseEntity<Page<User>> findAll(UserQueryDTO query , STablePageRequest spageable) {
         System.out.println("findAll");
+        spageable.setSortField("uid");
         Page<User> page = userService.findAll(UserQueryDTO.getWhereClause(query), spageable.getUserPageable());
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(page);
     }
@@ -114,6 +115,7 @@ public class UserController {
     @GetMapping("/order")
     public ResponseEntity<Page<Order>> findAllOrder(UserQueryDTO query , STablePageRequest spageable) {
         System.out.println("findAllOrder");
+        spageable.setSortField("oid");
         Page<Order> page = userService.findAllOrder(UserQueryDTO.getOrderSepcByUser(query), spageable.getUserPageable());
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(page);
     }

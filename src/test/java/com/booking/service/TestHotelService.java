@@ -41,7 +41,7 @@ public class TestHotelService {
 	
 	@Test
 	public void test2() {
-		User user = userService.findById(1L);
+		User user = userService.getUserById(1L);
 		System.out.println(user.toString());
 	}
 
