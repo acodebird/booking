@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -35,7 +36,7 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     IMailService mailService;
 
-    public static final String EHCACHE_LOGIN = "login";
+    public static final String LOGIN_SESSION_TOKEN = "user";
     public static final String EHCACHE_CAPTCHA = "captcha";
     public static final String EHCACHE_RSA = "rsa";
 
@@ -88,7 +89,7 @@ public class LoginServiceImpl implements LoginService {
 //
 //        return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(cInfo);
 //    }
-    public ResponseEntity<String> login(String password, String email) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public ResponseEntity<String> login(String password, String email, HttpSession session) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         System.out.println("email:"+email);
         UserQueryDTO dto = new UserQueryDTO();
         dto.setEmail(email);
@@ -114,10 +115,15 @@ public class LoginServiceImpl implements LoginService {
             return ResponseEntity.ofFailed().data("password_error");
         }
 
-        element=new Element(user.getUid(),user);
-        cacheManager.getCache(EHCACHE_LOGIN).put(element);
+        session.setAttribute(LOGIN_SESSION_TOKEN,user);
+//        element=new Element(user.getUid(),user);
+//        cacheManager.getCache(EHCACHE_LOGIN).put(element);
         System.out.println("密码正确, uid:"+user.getUid());
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(user.getUid());
+    }
+    public ResponseEntity<String> logout(HttpSession session){
+        session.removeAttribute(LOGIN_SESSION_TOKEN);
+        return ResponseEntity.ofFailed().data("logout");
     }
     public ResponseEntity<String> register(User user, String captcha, String token, int type) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         if(userService.existsByEmail(user.getEmail())) {
@@ -125,6 +131,9 @@ public class LoginServiceImpl implements LoginService {
         }
         String password= user.getUpassword();
         String email= user.getEmail();
+        if(password.trim().length()<1||email.trim().length()<1){
+            return ResponseEntity.ofFailed().data("empty_info");
+        }
         Element captchaEle = cacheManager.getCache(EHCACHE_CAPTCHA).get("captcha_" + token);
         Element rsaEle = cacheManager.getCache(EHCACHE_RSA).get("rsa_" + email);
         if (null == rsaEle) {
@@ -144,6 +153,7 @@ public class LoginServiceImpl implements LoginService {
         String salt = sha.getSalt(128);
         System.out.println("email:" + email);
         System.out.println("password:" + password);
+        System.out.println("type:" + type);
         password = sha.sha2(password + salt);
 
         User newUser = new User();
