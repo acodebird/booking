@@ -44,10 +44,7 @@ public class UserServiceImpl implements UserService {
 	@Cacheable(value=EHCACHE_NAME,key="'user_'+#uid")
 	public User findByEmail(Specification<User> spec){
 		List<User>users=userRepository.findAll(spec);
-		if(null==users||users.size()<1){
-			return new User();
-		}
-		return users.get(0);
+		return users.size()<1?null:users.get(0);
 	}
 	// 增加用户\更新用户
 	@CachePut(value=EHCACHE_NAME,key="'user_'+#user.getUid()")
@@ -60,42 +57,56 @@ public class UserServiceImpl implements UserService {
 	// 删除用户
 	@CacheEvict(value=EHCACHE_NAME,key="'user_'+#uid")
 	public void deleteById(Long uid){
+		UserQueryDTO dto = new UserQueryDTO();
+		List<Long> uids = dto.getUids();
+		uids.add(uid);
+		dto.setUids(uids);
+		deleteDependence(dto);
 		userRepository.deleteById(uid);
 	}
-	public void delete(User user){
-		userRepository.delete(user);
-	}
+//	public void delete(User user){
+//		userRepository.delete(user);
+//	}
 	// 批量删除用户
-	public void deleteAll(List<User> users){
-		userRepository.deleteAll(users);
-	}
-	public void deleteAll(Long[] uids){
-		List<Long> uidLists = new ArrayList<Long>(Arrays.asList(uids));
-
-		List<User> users = (List<User>) userRepository.findAllById(uidLists);
-		userRepository.deleteAll(users);
-	}
-	public void deleteAllById(List<Long> uids){
+//	public void deleteAll(List<User> users){
+//		userRepository.deleteAll(users);
+//	}
+//	public void deleteAll(Long[] uids){
+//		List<Long> uidLists = new ArrayList<Long>(Arrays.asList(uids));
+//		List<User> users = (List<User>) userRepository.findAllById(uidLists);
+//		userRepository.deleteAll(users);
+//	}
+	public void deleteAll(List<Long> uids){
+		UserQueryDTO dto = new UserQueryDTO();
+		dto.setUids(uids);
+		deleteDependence(dto);
 		List<User> users = (List<User>) userRepository.findAllById(uids);
 		userRepository.deleteAll(users);
 	}
+	public void deleteDependence(UserQueryDTO dto){
+		List<Order> orders = orderRepository.findAll(UserQueryDTO.getOrderSepcByUser(dto));
+		List<Comment> comments = commentRepository.findAll(UserQueryDTO.getCommentSepcByUser(dto));
+		commentRepository.deleteAll(comments);
+		orderRepository.deleteAll(orders);
+	}
+
 	// 获取用户列表
 	@Transactional(readOnly=true)
 	public Page<User> findAll(Specification<User> spec, Pageable pageable){
 		return userRepository.findAll(spec, pageable);
 	}
-	@Transactional(readOnly=true)
-	public Page<User> findAll(Pageable pageable){
-		return userRepository.findAll(pageable);
-	}
+//	@Transactional(readOnly=true)
+//	public Page<User> findAll(Pageable pageable){
+//		return userRepository.findAll(pageable);
+//	}
 	@Transactional(readOnly=true)
 	public List<User> findAll(){
 		return (List<User>) userRepository.findAll();
 	}
-	@Transactional(readOnly=true)
-	public List<User> findAllById(List<Long> uids){
-		return (List<User>) userRepository.findAllById(uids);
-	}
+//	@Transactional(readOnly=true)
+//	public List<User> findAllById(List<Long> uids){
+//		return (List<User>) userRepository.findAllById(uids);
+//	}
 
 	// 获取用户订单
 	@Transactional(readOnly=true)

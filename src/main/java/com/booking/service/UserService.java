@@ -3,9 +3,11 @@ package com.booking.service;
 import com.booking.domain.Comment;
 import com.booking.domain.Order;
 import com.booking.domain.User;
+import com.booking.dto.UserQueryDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,16 +20,17 @@ public interface UserService {
 	public void saveAll (List<User> users);
 	// 删除用户
 	public void deleteById(Long uid);
-	public void delete(User user);
+	//public void delete(User user);
 	// 批量删除用户
-	public void deleteAll(List<User> users);
-	public void deleteAll(Long[] uids);
-	public void deleteAllById(List<Long> uids);
+	//public void deleteAll(List<User> users);
+	//public void deleteAll(Long[] uids);
+	public void deleteAll(List<Long> uids);
+	public void deleteDependence(UserQueryDTO dto);
 	// 获取用户列表
 	public Page<User> findAll(Specification<User> spec, Pageable pageable);
-	public Page<User> findAll(Pageable pageable);
+	//public Page<User> findAll(Pageable pageable);
 	public List<User> findAll();
-	public List<User> findAllById(List<Long> uids);
+	//public List<User> findAllById(List<Long> uids);
 
 	// 获取用户订单
 	public List<Order> findAllOrder(Specification<Order> spec);
