@@ -39,11 +39,11 @@ public class TestHotelService {
 		userService.save(user);
 	}
 	
-	@Test
-	public void test2() {
-		User user = userService.findById(1L);
-		System.out.println(user.toString());
-	}
+//	@Test
+//	public void test2() {
+//		User user = userService.findById(1L);
+//		System.out.println(user.toString());
+//	}
 
 	/**
 	 * 酒店数据注入

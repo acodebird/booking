@@ -16,6 +16,11 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
+    /**
+     * 通过id查找订单
+     * @param id
+     * @return
+     */
     @Override
     public Order findById(Long id) {
         return orderRepository.findById(id).get();
@@ -27,8 +32,8 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional
-    public void save(Order order) {
-        orderRepository.save(order);
+    public Order save(Order order) {
+        return orderRepository.save(order);
     }
 
     /**

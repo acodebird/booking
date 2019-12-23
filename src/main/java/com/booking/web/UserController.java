@@ -32,7 +32,7 @@ public class UserController {
     @GetMapping("/{uid}")
     public User findById (@PathVariable("uid") Long uid) {
         System.out.println("findById");
-        return userService.getUserById(uid);
+        return userService.findById(uid);
     }
 
     // 增加用户
@@ -47,7 +47,7 @@ public class UserController {
     @PutMapping(value="{uid}")
     public ResponseEntity<String> update (@PathVariable("uid") Long id, @RequestBody User user) {
         System.out.println("update");
-        User target = userService.getUserById(id);
+        User target = userService.findById(id);
         if(target!=null) {
             BeanUtils.copyProperties(user, target);
             userService.save(target);

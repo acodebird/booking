@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -37,14 +38,15 @@ public class OrderController {
 
     /**
      * 订单预订
+     *
      * @param orderConfirmDTO
      * @param request
      * @return
      */
     @PutMapping
     public ResponseEntity add(@RequestBody OrderConfirmDTO orderConfirmDTO, HttpServletRequest request) {
-        User user = (User) request.getSession().getAttribute("user");
-//        User user = userService.findById(1L);
+//        User user = (User) request.getSession().getAttribute("user");
+        User user = userService.findById(1L);
         Order order = new Order();
         order.setUser(user);
         Room room = roomService.findById(orderConfirmDTO.getRid());
@@ -54,10 +56,36 @@ public class OrderController {
         order.setPrice(room.getPrice());
         order.setStatus(OrderStatusEnum.UNPAY);
         BeanUtils.copyProperties(orderConfirmDTO, order);
-        orderService.save(order);
+        //返回订单id
+        Long oid = orderService.save(order).getOid();
+        HashMap<String, Long> data = new HashMap<>();
+        data.put("oid", oid);
 
-        return ResponseEntity.ofSuccess().status(HttpStatus.OK).data("预订成功");
+        return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(data);
     }
+
+    /**
+     * 订单付款
+     * @param id
+     * @return
+     */
+    @PutMapping("/pay/{id}")
+    public ResponseEntity pay(@PathVariable("id") Long id) {
+        Order order = orderService.findById(id);
+        if (order.getStatus() == OrderStatusEnum.UNPAY) {
+            order.setStatus(OrderStatusEnum.UNUSE);
+            orderService.save(order);
+            return ResponseEntity.ofSuccess().status(HttpStatus.OK).data("付款成功");
+        } else if (order.getStatus() == OrderStatusEnum.CANCEL) {
+            return ResponseEntity.ofFailed().status(HttpStatus.OK).data("订单已取消，请重新预订");
+        } else if (order.getStatus() == OrderStatusEnum.UNUSE) {
+            return ResponseEntity.ofFailed().status(HttpStatus.OK).data("订单已支付");
+        } else {
+            return ResponseEntity.ofFailed().status(HttpStatus.OK).data("该订单已完成，不能支付");
+        }
+    }
+
+    /*--------------------------------------------------------------------------------------------------------------------*/
 
     /**
      * 获取一页订单

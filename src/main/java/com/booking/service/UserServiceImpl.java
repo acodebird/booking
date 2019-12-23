@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
 
 	// 根据用户 id 获取用户信息
 	@Transactional(readOnly=true)
-	public User getUserById(Long uid){
+	public User findById(Long uid){
 		return userRepository.findById(uid).get();
 	}
 	// 增加用户\更新用户

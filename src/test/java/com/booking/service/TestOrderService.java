@@ -39,7 +39,7 @@ public class TestOrderService {
                 else order.setStatus(OrderStatusEnum.CANCEL);
                 order.setHotel(hotelService.findById(2L));
                 order.setRoom(roomService.findById(10L));
-                order.setUser(userService.getUserById(90L+j));
+                order.setUser(userService.findById(90L+j));
                 order.setRemark("无烟房,外窗");
                 order.setCheckInPerson(order.getUser().getUname());
                 orderService.save(order);

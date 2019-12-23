@@ -19,7 +19,7 @@ public interface OrderService {
      * 更新或新增订单
      * @param order
      */
-    void save(Order order);
+    Order save(Order order);
 
     /**
      * 条件查询一页订单

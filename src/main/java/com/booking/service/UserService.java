@@ -6,13 +6,12 @@ import com.booking.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 public interface UserService {
 	// 根据用户 id 获取用户信息
-	public User getUserById(Long uid);
+	public User findById(Long uid);
 	// 增加用户\更新用户
 	public User save (User user);
 	public void saveAll (List<User> users);
