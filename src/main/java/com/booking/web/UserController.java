@@ -8,7 +8,6 @@ import com.booking.service.CommentService;
 import com.booking.service.OrderService;
 import com.booking.service.UserService;
 import com.booking.utils.STablePageRequest;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -51,8 +50,9 @@ public class UserController {
         if(target!=null) {
             BeanUtils.copyProperties(user, target);
             userService.save(target);
+            return ResponseEntity.ofSuccess().status(HttpStatus.OK).data("Update User Success.");
         }
-        return ResponseEntity.ofSuccess().status(HttpStatus.OK).data("Update User Success.");
+        return ResponseEntity.ofFailed();
     }
 
     // 批量更新用户
@@ -61,8 +61,9 @@ public class UserController {
         System.out.println("updateBatch");
         if(users!=null) {
             userService.saveAll(users);
+            return ResponseEntity.ofSuccess().status(HttpStatus.OK).data("Update User Success.");
         }
-        return ResponseEntity.ofSuccess().status(HttpStatus.OK).data("Update User Success.");
+        return ResponseEntity.ofFailed();
     }
 
     // 删除用户
@@ -70,17 +71,18 @@ public class UserController {
     public ResponseEntity<String> delete(@PathVariable("uid") Long uid) {
         System.out.println("delete uid="+uid);
         if (uid != null) {
-            UserQueryDTO dto=new UserQueryDTO();
-            List<Long> uids=dto.getUids();
+            UserQueryDTO dto = new UserQueryDTO();
+            List<Long> uids = dto.getUids();
             uids.add(uid);
             dto.setUids(uids);
-            List<Order> orders=userService.findAllOrder(UserQueryDTO.getOrderSepcByUser(dto));
-            List<Comment> comments=userService.findAllComment(UserQueryDTO.getCommentSepcByUser(dto));
+            List<Order> orders = userService.findAllOrder(UserQueryDTO.getOrderSepcByUser(dto));
+            List<Comment> comments = userService.findAllComment(UserQueryDTO.getCommentSepcByUser(dto));
             commentService.deleteAll(comments);
             orderService.deleteAll(orders);
             userService.deleteById(uid);
+            return ResponseEntity.ofSuccess().status(HttpStatus.OK).data("Delete Order Success.");
         }
-        return  ResponseEntity.ofSuccess().status(HttpStatus.OK).data("Delete Order Success.");
+        return ResponseEntity.ofFailed();
     }
 
     // 批量删除用户
@@ -88,24 +90,23 @@ public class UserController {
     public ResponseEntity<String> deleteBatch(@RequestBody List<Long> uids) {
         System.out.println("deleteBatch");
         if (uids != null) {
-            UserQueryDTO dto=new UserQueryDTO();
+            UserQueryDTO dto = new UserQueryDTO();
             dto.setUids(uids);
-            List<Order> orders=userService.findAllOrder(UserQueryDTO.getOrderSepcByUser(dto));
-            List<Comment> comments=userService.findAllComment(UserQueryDTO.getCommentSepcByUser(dto));
+            List<Order> orders = userService.findAllOrder(UserQueryDTO.getOrderSepcByUser(dto));
+            List<Comment> comments = userService.findAllComment(UserQueryDTO.getCommentSepcByUser(dto));
             commentService.deleteAll(comments);
             orderService.deleteAll(orders);
             userService.deleteAllById(uids);
+            return ResponseEntity.ofSuccess().status(HttpStatus.OK).data("Delete Order Success.");
         }
-        return  ResponseEntity.ofSuccess().status(HttpStatus.OK).data("Delete Order Success.");
+        return ResponseEntity.ofFailed();
     }
 
     // 获取用户列表 { pageSize: 10, pageNo: 1 }
     @GetMapping
     public ResponseEntity<Page<User>> findAll(UserQueryDTO query , STablePageRequest spageable) {
-        if (StringUtils.isBlank(spageable.getSortField())) {
-            spageable.setSortField("uid");
-        }
         System.out.println("findAll");
+        spageable.setSortField("uid");
         Page<User> page = userService.findAll(UserQueryDTO.getWhereClause(query), spageable.getUserPageable());
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(page);
     }
@@ -113,10 +114,8 @@ public class UserController {
     // 获取用户订单列表
     @GetMapping("/order")
     public ResponseEntity<Page<Order>> findAllOrder(UserQueryDTO query , STablePageRequest spageable) {
-        if (StringUtils.isBlank(spageable.getSortField())) {
-            spageable.setSortField("uid");
-        }
         System.out.println("findAllOrder");
+        spageable.setSortField("oid");
         Page<Order> page = userService.findAllOrder(UserQueryDTO.getOrderSepcByUser(query), spageable.getUserPageable());
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(page);
     }

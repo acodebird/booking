@@ -1,10 +1,11 @@
 package com.booking.service;
 
+import com.booking.common.service.IMailService;
 import com.booking.domain.Order;
 import com.booking.domain.User;
 import com.booking.dto.UserQueryDTO;
-import com.booking.enums.OrderStatusEnum;
-
+import com.booking.utils.MailInfo;
+import com.booking.utils.SHA2;
 import com.booking.utils.STablePageRequest;
 
 import org.junit.Test;
@@ -15,7 +16,9 @@ import org.springframework.data.domain.Page;
 
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Date;
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -23,23 +26,20 @@ import java.util.List;
 public class TestUserService {
     @Autowired
     UserService userService;
-
     @Autowired
-    private OrderService orderService;
-
-    @Autowired
-    private HotelService hotelService;
-
-    @Autowired
-    private RoomService roomService;
+    IMailService mailService;
 
     @Test
-    public void saveUsers(){
+    public void saveUsers() throws UnsupportedEncodingException, NoSuchAlgorithmException {
         String p="0000000000";
+        SHA2 sha2=new SHA2();
         for(int i=0;i<100;i++){
+            String salt=sha2.getSalt(128);
+            String password="password_"+i;
+            password=sha2.sha2(password+salt);
             User user=new User();
-            user.setSalt("salt_"+i);
-            user.setUpassword("password_"+i);
+            user.setSalt(salt);
+            user.setUpassword(password);
             user.setEmail(i+"_@example.com");
             user.setEnable((1==(i%2)?false:true));
             user.setIcon("/upload/user/avatar/default_avatar.jpeg");
@@ -69,6 +69,7 @@ public class TestUserService {
     }
 
     @Test
+<<<<<<< HEAD
     public void testSaveOrder() {
         for (int i = 1; i <= 5; i++) {
             Order order = new Order();
@@ -89,5 +90,12 @@ public class TestUserService {
             order.setCheckInPerson(order.getUser().getUname());
             orderService.save(order);
         }
+=======
+    public void sendTemplateMail() throws MessagingException {
+        MailInfo mailInfo=new MailInfo();
+        mailInfo.setTo("imyxiong@163.com");
+        mailInfo.setSubject("SpringBoot 发送模板邮件");
+        mailService.sendTemplateMail(mailInfo, "thymeleaf/verification.html", "code","1234");
+>>>>>>> aafd12c5ee2f0445450955a5aaf6f26e0633a081
     }
 }

@@ -11,7 +11,12 @@ import java.util.List;
 
 public interface UserService {
 	// 根据用户 id 获取用户信息
+<<<<<<< HEAD
 	public User findById(Long uid);
+=======
+	public User getUserById(Long uid);
+	public User findByEmail(Specification<User> spec);
+>>>>>>> aafd12c5ee2f0445450955a5aaf6f26e0633a081
 	// 增加用户\更新用户
 	public User save (User user);
 	public void saveAll (List<User> users);
@@ -25,7 +30,9 @@ public interface UserService {
 	// 获取用户列表
 	public Page<User> findAll(Specification<User> spec, Pageable pageable);
 	public Page<User> findAll(Pageable pageable);
+	public List<User> findAll();
 	public List<User> findAllById(List<Long> uids);
+
 	// 获取用户订单
 	public List<Order> findAllOrder(Specification<Order> spec);
 	public Page<Order> findAllOrder(Specification<Order> spec, Pageable pageable);
@@ -34,5 +41,6 @@ public interface UserService {
 	public Page<Comment> findAllComment(Specification<Comment> spec, Pageable pageable);
 
 	public boolean existsById(Long uid);
+	public boolean existsByEmail(String email);
 	public long count();
 }
