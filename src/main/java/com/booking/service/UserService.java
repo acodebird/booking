@@ -11,12 +11,8 @@ import java.util.List;
 
 public interface UserService {
 	// 根据用户 id 获取用户信息
-<<<<<<< HEAD
-	public User findById(Long uid);
-=======
 	public User getUserById(Long uid);
 	public User findByEmail(Specification<User> spec);
->>>>>>> aafd12c5ee2f0445450955a5aaf6f26e0633a081
 	// 增加用户\更新用户
 	public User save (User user);
 	public void saveAll (List<User> users);

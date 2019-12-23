@@ -35,12 +35,8 @@ public class UserServiceImpl implements UserService {
 
 	// 根据用户 id 获取用户信息
 	@Transactional(readOnly=true)
-<<<<<<< HEAD
-	public User findById(Long uid){
-=======
 	@Cacheable(value=EHCACHE_NAME,key="'user_'+#uid")
 	public User getUserById(Long uid){
->>>>>>> aafd12c5ee2f0445450955a5aaf6f26e0633a081
 		return userRepository.findById(uid).get();
 	}
 	// 根据用户 email 获取用户信息
