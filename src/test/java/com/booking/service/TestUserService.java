@@ -4,6 +4,7 @@ import com.booking.common.service.IMailService;
 import com.booking.domain.Order;
 import com.booking.domain.User;
 import com.booking.dto.UserQueryDTO;
+import com.booking.enums.OrderStatusEnum;
 import com.booking.utils.MailInfo;
 import com.booking.utils.SHA2;
 import com.booking.utils.STablePageRequest;
@@ -19,6 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -68,34 +70,10 @@ public class TestUserService {
         }
     }
 
-    @Test
-<<<<<<< HEAD
-    public void testSaveOrder() {
-        for (int i = 1; i <= 5; i++) {
-            Order order = new Order();
-            order.setCount(2);
-            order.setPrice(129.9);
-            order.setTotalPrice(order.getCount() * order.getPrice());
-            order.setCreateTime(new Date());
-            order.setStartTime(new Date());
-            order.setEndTime(new Date());
-            if (i % 4 == 0) order.setStatus(OrderStatusEnum.UNPAY);
-            else if (i % 3 == 0) order.setStatus(OrderStatusEnum.UNUSE);
-            else if (i % 2 == 0) order.setStatus(OrderStatusEnum.SUCCESS);
-            else order.setStatus(OrderStatusEnum.CANCEL);
-            order.setHotel(hotelService.findById(2L));
-            order.setRoom(roomService.findById(10L));
-            order.setUser(userService.findById(3L));
-            order.setRemark("无烟房,外窗");
-            order.setCheckInPerson(order.getUser().getUname());
-            orderService.save(order);
-        }
-=======
     public void sendTemplateMail() throws MessagingException {
         MailInfo mailInfo=new MailInfo();
         mailInfo.setTo("imyxiong@163.com");
         mailInfo.setSubject("SpringBoot 发送模板邮件");
         mailService.sendTemplateMail(mailInfo, "thymeleaf/verification.html", "code","1234");
->>>>>>> aafd12c5ee2f0445450955a5aaf6f26e0633a081
     }
 }

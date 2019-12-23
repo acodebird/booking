@@ -5,6 +5,7 @@ import com.booking.domain.Order;
 import com.booking.dto.UserQueryDTO;
 import com.booking.enums.HotelTypeEnum;
 import com.booking.enums.OrderStatusEnum;
+import com.booking.enums.PayTypeEnum;
 import com.booking.enums.RoomTypeEnum;
 import com.booking.repository.*;
 import com.booking.utils.SHA2;
@@ -141,6 +142,8 @@ public class InitDB {
                 order.setCount(2);
                 order.setPrice(129.9);
                 order.setTotalPrice(order.getCount() * order.getPrice());
+                order.setTelephone(user.getTelephone());
+                order.setPayType(PayTypeEnum.ONLINE);
                 order.setCreateTime(new Date());
                 order.setStartTime(new Date());
                 order.setEndTime(new Date());
