@@ -44,6 +44,7 @@ public class Room implements Serializable {
 	private Double price; //房型价格
 	private String assitions; //房型详情
 	private String img; //房型图片
+	private Integer stock; //房型库存
 	
 	@ManyToOne
 	@JoinColumn(name = "hid")

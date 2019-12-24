@@ -59,4 +59,12 @@ public class HotelServiceImpl implements HotelService {
 			hotelRepository.deleteAll(hotels);
 		}
 	}
+	/**
+     * 获取所有酒店信息
+     * @return
+     */
+	@Override
+	public List<Hotel> findAll() {
+		return (List<Hotel>) hotelRepository.findAll();
+	}
 }

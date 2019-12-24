@@ -1,14 +1,14 @@
 package com.booking.service;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 
 import com.booking.domain.Hotel;
 import com.booking.domain.Room;
 import com.booking.domain.User;
-import com.booking.dto.HotelQueryDTO;
 import com.booking.enums.HotelTypeEnum;
 import com.booking.enums.RoomTypeEnum;
 import com.booking.utils.STablePageRequest;
@@ -129,9 +129,7 @@ public class TestHotelService {
 	 */
 	@Test
 	public void testSaveRoom() {
-		STablePageRequest sTablePageRequest = new STablePageRequest();
-		sTablePageRequest.setSortField("hid");
-		Page<Hotel> allHotel = hotelService.findAll(HotelQueryDTO.getSpecification(new HotelQueryDTO()), sTablePageRequest.getPageable());
+		List<Hotel> allHotel = hotelService.findAll();
 		allHotel.forEach(hotel -> {
 			for (int i = 0; i < 4; i++) {
 				Room room = new Room();
@@ -152,8 +150,7 @@ public class TestHotelService {
 					room.setPrice(249.9);
 					room.setAssitions("床型：双床1.8米,面积：30㎡,不允许加床,外窗");
 				}
-				room.setImg("xxxxxxxxxx");
-//				room.setOrders(null);
+				room.setImg("");
 				room.setHotel(hotel);
 				roomService.save(room);
 			}

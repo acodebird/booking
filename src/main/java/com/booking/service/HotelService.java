@@ -23,6 +23,11 @@ public interface HotelService {
      */
     Page<Hotel> findAll(Specification<Hotel> specification, Pageable pageable);
     /**
+     * 获取所有酒店信息
+     * @return
+     */
+    List<Hotel> findAll();
+    /**
      * 根据id删除酒店
      */
     void deleteById(Long hid);

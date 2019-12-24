@@ -1,6 +1,7 @@
 package com.booking.web;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -43,13 +44,12 @@ public class HotelController {
      * @return
      */
     @GetMapping
-    public ResponseEntity<Page<Order>> getHotelPage(STablePageRequest pageable, HotelQueryDTO hotelQueryDTO) {
+    public ResponseEntity<Page<Hotel>> getHotelPage(STablePageRequest pageable, HotelQueryDTO hotelQueryDTO) {
         if (StringUtils.isBlank(pageable.getSortField())) {
             pageable.setSortField("hid");
         }
         Page<Hotel> page = Page.empty(pageable.getPageable());
         page = hotelService.findAll(HotelQueryDTO.getSpecification(hotelQueryDTO), pageable.getPageable());
-
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(page);
     }
     /**
