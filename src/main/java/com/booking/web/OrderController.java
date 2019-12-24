@@ -1,5 +1,6 @@
 package com.booking.web;
 
+import com.booking.domain.Comment;
 import com.booking.domain.Order;
 import com.booking.domain.Room;
 import com.booking.domain.User;
@@ -7,6 +8,7 @@ import com.booking.dto.OrderConfirmDTO;
 import com.booking.dto.OrderEditDTO;
 import com.booking.dto.OrderQueryDTO;
 import com.booking.enums.OrderStatusEnum;
+import com.booking.service.CommentService;
 import com.booking.service.OrderService;
 import com.booking.service.RoomService;
 import com.booking.service.UserService;
@@ -16,10 +18,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +44,9 @@ public class OrderController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private CommentService commentService;
+
     /**
      * 订单预订
      *
@@ -45,8 +56,7 @@ public class OrderController {
      */
     @PutMapping
     public ResponseEntity add(@RequestBody OrderConfirmDTO orderConfirmDTO, HttpServletRequest request) {
-//        User user = (User) request.getSession().getAttribute("user");
-        User user = userService.getUserById(1L);
+        User user = (User) request.getSession().getAttribute("user");
         Order order = new Order();
         order.setUser(user);
         Room room = roomService.findById(orderConfirmDTO.getRid());
@@ -85,6 +95,50 @@ public class OrderController {
         }
     }
 
+    /**
+     * 根据用户id列出其所有订单，可根据订单状态筛选
+     * @param uid
+     * @param orderStatus
+     * @return
+     */
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<Order>> myOrders(@PathVariable("id") Long uid, OrderStatusEnum orderStatus) {
+        List<Order> orders = orderService.findAll(new Specification<Order>() {
+            @Override
+            public Predicate toPredicate(Root<Order> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predicate = new ArrayList<>();
+                //拼接用户id
+                predicate.add(criteriaBuilder.equal(root.get("user").get("uid").as(Long.class), uid));
+                //拼接订单状态
+                if (null != orderStatus && "ALL" != orderStatus.name()) {
+                    predicate.add(criteriaBuilder.equal(root.get("status").as(OrderStatusEnum.class), orderStatus));
+                }
+
+                Predicate[] predicates = new Predicate[predicate.size()];
+                //拼接排序规则
+                return criteriaQuery.where(predicate.toArray(predicates))
+                        .orderBy(criteriaBuilder.desc(root.get("createTime").as(Date.class)))
+                        .getRestriction();
+            }
+        });
+
+        return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(orders);
+    }
+
+    /**
+     * 根据订单id查询
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    private ResponseEntity<Order> findById(@PathVariable("id") Long id) {
+        Order order = orderService.findById(id);
+        if (null != order)
+            return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(order);
+        else
+            return ResponseEntity.ofFailed().status(HttpStatus.OK).data("该订单不存在");
+    }
+
     /*--------------------------------------------------------------------------------------------------------------------*/
 
     /**
@@ -110,6 +164,10 @@ public class OrderController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity deleteOrder(@PathVariable("id") Long id) {
+        List<Comment> comments = commentService.findAllByOid(id);
+        if (comments.size() != 0)
+            commentService.deleteAll(comments);
+
         orderService.deleteById(id);
         return ResponseEntity.ofSuccess().status(HttpStatus.OK);
     }
@@ -123,8 +181,14 @@ public class OrderController {
     @DeleteMapping
     public ResponseEntity deleteByIds(@RequestBody List<Long> ids) {
         List<Order> orders = orderService.findAllById(ids);
-        if (null != orders)
+        if (orders.size() != 0) {
+            orders.forEach( order -> {
+                List<Comment> comments = commentService.findAllByOid(order.getOid());
+                if (comments.size() != 0)
+                    commentService.deleteAll(comments);
+            });
             orderService.deleteAll(orders);
+        }
         return ResponseEntity.ofSuccess().status(HttpStatus.OK);
     }
 

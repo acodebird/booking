@@ -1,6 +1,7 @@
 package com.booking.service;
 
 import com.booking.domain.Order;
+import com.booking.enums.OrderStatusEnum;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -28,6 +29,13 @@ public interface OrderService {
      * @return
      */
     Page<Order> findAll(Specification<Order> spec, Pageable pageable);
+
+    /**
+     * 为某一个用户查询其所有订单
+     * @param spec
+     * @return
+     */
+    List<Order> findAll(Specification<Order> spec);
 
     /**
      * 根据id删除一条订单

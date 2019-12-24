@@ -8,16 +8,24 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class CommentServiceImpl implements CommentService{
+public class CommentServiceImpl implements CommentService {
     @Autowired
     private CommentRepository commentRepository;
-    public Comment save(Comment comment){
+
+    @Override
+    public List<Comment> findAllByOid(Long oid) {
+        return commentRepository.findAllByOid(oid);
+    }
+
+    public Comment save(Comment comment) {
         return commentRepository.save(comment);
     }
-    public void save(List<Comment> comments){
+
+    public void save(List<Comment> comments) {
         commentRepository.saveAll(comments);
     }
-    public void deleteAll(List<Comment> comments){
+
+    public void deleteAll(List<Comment> comments) {
         commentRepository.deleteAll(comments);
     }
 }

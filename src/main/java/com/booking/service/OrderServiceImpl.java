@@ -1,6 +1,7 @@
 package com.booking.service;
 
 import com.booking.domain.Order;
+import com.booking.enums.OrderStatusEnum;
 import com.booking.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,7 +24,10 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public Order findById(Long id) {
-        return orderRepository.findById(id).get();
+        Order order = orderRepository.findById(id).get();
+        order.getUser().setSalt(null);
+        order.getUser().setUpassword(null);
+        return order;
     }
 
     /**
@@ -44,6 +48,23 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Page<Order> findAll(Specification<Order> spec, Pageable pageable) {
         Page<Order> orders = orderRepository.findAll(spec, pageable);
+        //清空用户的密码和盐
+        orders.forEach(order -> {
+            order.getUser().setSalt(null);
+            order.getUser().setUpassword(null);
+        });
+
+        return orders;
+    }
+
+    /**
+     * 为某一个用户查询其所有订单
+     * @param spec
+     * @return
+     */
+    @Override
+    public List<Order> findAll(Specification<Order> spec) {
+        List<Order> orders = orderRepository.findAll(spec);
         //清空用户的密码和盐
         orders.forEach(order -> {
             order.getUser().setSalt(null);
@@ -82,4 +103,9 @@ public class OrderServiceImpl implements OrderService {
     public void deleteAll(List<Order> orders) {
         orderRepository.deleteAll(orders);
     }
+
+//    @Override
+//    public List<Order> findAllByUid(Long uid, OrderStatusEnum orderStatus) {
+//        return orderRepository.findByUid(uid, orderStatus);
+//    }
 }
