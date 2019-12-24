@@ -4,13 +4,13 @@ import com.booking.common.service.IMailService;
 import com.booking.domain.Order;
 import com.booking.domain.User;
 import com.booking.dto.UserQueryDTO;
-import com.booking.enums.OrderStatusEnum;
 import com.booking.utils.MailInfo;
 import com.booking.utils.SHA2;
 import com.booking.utils.STablePageRequest;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -20,7 +20,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -55,7 +54,7 @@ public class TestUserService {
     public void findUsers(){
         STablePageRequest pageable=new STablePageRequest();
         UserQueryDTO queryDTO=new UserQueryDTO();
-        Page<User> page = userService.findAll(queryDTO.getWhereClause(queryDTO),pageable.getUserPageable());
+        Page<User> page = userService.findAll(queryDTO.getWhereClause(queryDTO),pageable.getPageable());
     }
     @Test
     public void findOrderByUser(){
@@ -70,10 +69,12 @@ public class TestUserService {
         }
     }
 
+    @Test
     public void sendTemplateMail() throws MessagingException {
         MailInfo mailInfo=new MailInfo();
         mailInfo.setTo("imyxiong@163.com");
         mailInfo.setSubject("SpringBoot 发送模板邮件");
         mailService.sendTemplateMail(mailInfo, "thymeleaf/verification.html", "code","1234");
     }
+
 }

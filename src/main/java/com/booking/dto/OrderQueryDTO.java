@@ -26,7 +26,7 @@ public class OrderQueryDTO implements Serializable {
     private Integer minPrice;
     private Long oid;
     private OrderStatusEnum orderStatus;
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date startTime;
     private String uName;
 
