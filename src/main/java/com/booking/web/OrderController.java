@@ -57,6 +57,7 @@ public class OrderController {
     @PutMapping
     public ResponseEntity add(@RequestBody OrderConfirmDTO orderConfirmDTO, HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("user");
+//        User user = userService.getUserById(1L);
         Order order = new Order();
         order.setUser(user);
         Room room = roomService.findById(orderConfirmDTO.getRid());

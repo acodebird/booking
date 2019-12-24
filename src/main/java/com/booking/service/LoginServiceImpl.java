@@ -91,9 +91,7 @@ public class LoginServiceImpl implements LoginService {
 //    }
     public ResponseEntity<String> login(String password, String email, HttpSession session) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         System.out.println("email:"+email);
-        UserQueryDTO dto = new UserQueryDTO();
-        dto.setEmail(email);
-        User user = userService.findByEmail(UserQueryDTO.getWhereClause(dto));
+        User user = userService.findByEmail(email);
         if(null==user){
             return ResponseEntity.ofFailed().data("user_not_existed");
         }
@@ -145,6 +143,7 @@ public class LoginServiceImpl implements LoginService {
         if (!captcha.equals(captchaEle.getObjectValue())) {
             return ResponseEntity.ofFailed().data("captcha_error");
         }
+        cacheManager.getCache(EHCACHE_CAPTCHA).remove("captcha_" + token);
 
         RSA rsa = (RSA) (rsaEle.getObjectValue());
         byte[] real = rsa.decrypt(Base64.decodeBase64(password), KeyType.PrivateKey);

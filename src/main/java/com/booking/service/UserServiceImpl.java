@@ -41,9 +41,11 @@ public class UserServiceImpl implements UserService {
 	}
 	// 根据用户 email 获取用户信息
 	@Transactional(readOnly=true)
-	@Cacheable(value=EHCACHE_NAME,key="'user_'+#uid")
-	public User findByEmail(Specification<User> spec){
-		List<User>users=userRepository.findAll(spec);
+	@Cacheable(value=EHCACHE_NAME,key="'user_'+#email")
+	public User findByEmail(String email){
+		UserQueryDTO dto = new UserQueryDTO();
+		dto.setEmail(email);
+		List<User>users=userRepository.findAll(UserQueryDTO.getWhereClause(dto));
 		return users.size()<1?null:users.get(0);
 	}
 	// 增加用户\更新用户

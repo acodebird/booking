@@ -14,7 +14,7 @@ import java.util.List;
 public interface UserService {
 	// 根据用户 id 获取用户信息
 	public User getUserById(Long uid);
-	public User findByEmail(Specification<User> spec);
+	public User findByEmail(String email);
 	// 增加用户\更新用户
 	public User save (User user);
 	public void saveAll (List<User> users);
