@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import com.booking.domain.Hotel;
 import com.booking.domain.Room;
 import com.booking.domain.User;
+import com.booking.dto.HotelQueryDTO;
 import com.booking.enums.HotelTypeEnum;
 import com.booking.enums.RoomTypeEnum;
 import com.booking.utils.STablePageRequest;
@@ -61,14 +62,11 @@ public class TestHotelService {
 			hotel.setAddress("广东省东莞市大学路" + i + "号");
 			hotel.setDescription("于2010年开业，东莞市维也纳国际酒店旗舰店，适合广大人群入驻");
 			hotel.setFacilities("停车场,餐厅");
-			hotel.setService("接待外宾，叫醒服务");
-			hotel.setPhone("12345678910");
+			hotel.setService("接待外宾,叫醒服务");
+			hotel.setPhone("13128324724");
 			hotel.setType(HotelTypeEnum.APARTMENT);
 			hotel.setRate(4.8f);
-			hotel.setImg("/upload/hotel/e3f2b968-e07b-4dfa-b04a-accfb19431bf.jpg");
-//			hotel.setRooms(null);
-//			hotel.setOrders(null);
-//			hotel.setComments(null);
+			hotel.setImg("");
 			hotelService.save(hotel);
 		}
     }
@@ -133,7 +131,7 @@ public class TestHotelService {
 	public void testSaveRoom() {
 		STablePageRequest sTablePageRequest = new STablePageRequest();
 		sTablePageRequest.setSortField("hid");
-		Page<Hotel> allHotel = hotelService.findAll(sTablePageRequest.getPageable());
+		Page<Hotel> allHotel = hotelService.findAll(HotelQueryDTO.getSpecification(new HotelQueryDTO()), sTablePageRequest.getPageable());
 		allHotel.forEach(hotel -> {
 			for (int i = 0; i < 4; i++) {
 				Room room = new Room();

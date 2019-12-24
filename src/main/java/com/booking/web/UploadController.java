@@ -29,7 +29,8 @@ public class UploadController {
 	@PostMapping
     public ResponseEntity uploadFile(String directoryName, MultipartFile file, HttpServletRequest req) {
 		String realPath = req.getServletContext().getRealPath("/upload/"+directoryName);
-	    File folder = new File(realPath);
+	    System.out.println(realPath);
+		File folder = new File(realPath);
 	    if (!folder.exists()) {
 	        folder.mkdirs();
 	    }
