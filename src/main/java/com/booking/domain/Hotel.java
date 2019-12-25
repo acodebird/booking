@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 import com.booking.enums.HotelTypeEnum;
@@ -45,6 +46,8 @@ public class Hotel implements Serializable {
 	private HotelTypeEnum type; //酒店类型(APARTMENT：公寓, HOMESTAY：民宿, HOSTEL：青旅, ECONOMY：经济连锁, HIGNEND：高级连锁)
 	private Float rate; //酒店评分
 	private String img; //酒店图片
+	@Transient
+	private Double landprice; //酒店最低价
 	
 //	//酒店与订单建立双向关联关系，由多的一方订单维护外键
 //	@OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

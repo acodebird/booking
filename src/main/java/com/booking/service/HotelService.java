@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import com.booking.domain.Hotel;
 
@@ -18,8 +19,14 @@ public interface HotelService {
     Hotel findById(Long hid);
     /**
      * 获取一页酒店信息
+     * @param specification 
      */
-    Page<Hotel> findAll(Pageable pageable);
+    Page<Hotel> findAll(Specification<Hotel> specification, Pageable pageable);
+    /**
+     * 获取所有酒店信息
+     * @return
+     */
+    List<Hotel> findAll();
     /**
      * 根据id删除酒店
      */
