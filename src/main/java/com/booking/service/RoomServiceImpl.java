@@ -17,25 +17,24 @@ public class RoomServiceImpl implements RoomService {
     public void save(Room room) {
         roomRepository.save(room);
     }
-    
+
     @Override
-	public void deleteById(Long rid) {
-    	roomRepository.deleteById(rid);
-	}
+    public void deleteById(Long rid) {
+        roomRepository.deleteById(rid);
+    }
 
-	@Override
-	public Room findById(Long rid) {
+    @Override
+    public Room findById(Long rid) {
+        return roomRepository.findById(rid).get();
+    }
 
-		return roomRepository.findById(rid).get();
-	}
+    @Override
+    public List<Room> findAll() {
+        return (List<Room>) roomRepository.findAll();
+    }
 
-	@Override
-	public List<Room> findAll() {
-		return (List<Room>) roomRepository.findAll();
-	}
-
-	@Override
-	public List<Room> findByHid(Long hid) {
-		return roomRepository.findByHid(hid);
-	}
+    @Override
+    public List<Room> findByHid(Long hid) {
+        return roomRepository.findByHid(hid);
+    }
 }

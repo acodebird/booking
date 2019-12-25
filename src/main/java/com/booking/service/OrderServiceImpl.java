@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -19,12 +20,14 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 通过id查找订单
+     *
      * @param id
      * @return
      */
     @Override
     public Order findById(Long id) {
         Order order = orderRepository.findById(id).get();
+        isCancel(order);
         order.getUser().setSalt(null);
         order.getUser().setUpassword(null);
         return order;
@@ -32,6 +35,7 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 更新或新增订单
+     *
      * @param order
      */
     @Override
@@ -41,7 +45,18 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
+     * 获取所有订单
+     *
+     * @return
+     */
+    @Override
+    public List<Order> findAll() {
+        return (List<Order>) orderRepository.findAll();
+    }
+
+    /**
      * 查询一页订单
+     *
      * @param pageable
      * @return
      */
@@ -50,6 +65,7 @@ public class OrderServiceImpl implements OrderService {
         Page<Order> orders = orderRepository.findAll(spec, pageable);
         //清空用户的密码和盐
         orders.forEach(order -> {
+            isCancel(order);
             order.getUser().setSalt(null);
             order.getUser().setUpassword(null);
         });
@@ -59,6 +75,7 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 为某一个用户查询其所有订单
+     *
      * @param spec
      * @return
      */
@@ -67,6 +84,7 @@ public class OrderServiceImpl implements OrderService {
         List<Order> orders = orderRepository.findAll(spec);
         //清空用户的密码和盐
         orders.forEach(order -> {
+            isCancel(order);
             order.getUser().setSalt(null);
             order.getUser().setUpassword(null);
         });
@@ -76,6 +94,7 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 根据id删除一条订单
+     *
      * @param id
      */
     @Override
@@ -86,6 +105,7 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 根据id查找一批订单
+     *
      * @param ids
      * @return
      */
@@ -96,6 +116,7 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 批量删除订单
+     *
      * @param orders
      */
     @Override
@@ -104,8 +125,18 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.deleteAll(orders);
     }
 
-//    @Override
-//    public List<Order> findAllByUid(Long uid, OrderStatusEnum orderStatus) {
-//        return orderRepository.findByUid(uid, orderStatus);
-//    }
+    /**
+     * 判断订单是否需要取消
+     *
+     * @param order
+     */
+    @Override
+    @Transactional
+    public void isCancel(Order order) {
+        //满足两个条件则取消订单：1、订单状态为“未付款(UNPAY)”；2、订单的过期时间小于当前时间
+        if (order != null && order.getStatus() == OrderStatusEnum.UNPAY && order.getCancelTime().compareTo(new Date()) <= 0) {
+            order.setStatus(OrderStatusEnum.CANCEL);
+            orderRepository.save(order);
+        }
+    }
 }

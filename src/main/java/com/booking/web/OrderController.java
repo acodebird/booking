@@ -56,14 +56,15 @@ public class OrderController {
      */
     @PutMapping
     public ResponseEntity add(@RequestBody OrderConfirmDTO orderConfirmDTO, HttpServletRequest request) {
-        User user = (User) request.getSession().getAttribute("user");
-//        User user = userService.getUserById(1L);
+//        User user = (User) request.getSession().getAttribute("user");
+        User user = userService.getUserById(41L);
         Order order = new Order();
         order.setUser(user);
         Room room = roomService.findById(orderConfirmDTO.getRid());
         order.setRoom(room);
         order.setHotel(room.getHotel());
         order.setCreateTime(new Date());
+        order.setCancelTime(new Date(order.getCreateTime().getTime() + 30 * 60 * 1000));
         order.setPrice(room.getPrice());
         order.setStatus(OrderStatusEnum.UNPAY);
         BeanUtils.copyProperties(orderConfirmDTO, order);
@@ -77,12 +78,14 @@ public class OrderController {
 
     /**
      * 订单付款
+     *
      * @param id
      * @return
      */
     @PutMapping("/pay/{id}")
     public ResponseEntity pay(@PathVariable("id") Long id) {
         Order order = orderService.findById(id);
+        orderService.isCancel(order);
         if (order.getStatus() == OrderStatusEnum.UNPAY) {
             order.setStatus(OrderStatusEnum.UNUSE);
             orderService.save(order);
@@ -98,6 +101,7 @@ public class OrderController {
 
     /**
      * 根据用户id列出其所有订单，可根据订单状态筛选
+     *
      * @param uid
      * @param orderStatus
      * @return
@@ -128,6 +132,7 @@ public class OrderController {
 
     /**
      * 根据订单id查询
+     *
      * @param id
      * @return
      */
@@ -183,7 +188,7 @@ public class OrderController {
     public ResponseEntity deleteByIds(@RequestBody List<Long> ids) {
         List<Order> orders = orderService.findAllById(ids);
         if (orders.size() != 0) {
-            orders.forEach( order -> {
+            orders.forEach(order -> {
                 List<Comment> comments = commentService.findAllByOid(order.getOid());
                 if (comments.size() != 0)
                     commentService.deleteAll(comments);

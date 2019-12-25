@@ -63,6 +63,12 @@ public class Order implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@JsonFormat(pattern="yyyy/MM/dd HH:mm:ss",timezone="GMT+8")
 	@DateTimeFormat(pattern="yy/MM/dd HH:mm:ss")
+	@Column(name = "cancel_time")
+	private Date cancelTime; //失效时间（未付款的订单被取消的时间）
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@JsonFormat(pattern="yyyy/MM/dd HH:mm:ss",timezone="GMT+8")
+	@DateTimeFormat(pattern="yy/MM/dd HH:mm:ss")
 	@Column(name = "start_time")
 	private Date startTime; //入住时间
 
@@ -93,7 +99,7 @@ public class Order implements Serializable {
 	@Override
 	public String toString() {
 		return "Order [oid=" + oid + ", count=" + count + ", price=" + price + ", totalprice=" + totalPrice
-				+ ", createTime=" + createTime + ", startTime=" + startTime + ", endTime=" + endTime + ", status="
+				+ ", createTime=" + createTime + "，cancelTime=" + cancelTime + ", startTime=" + startTime + ", endTime=" + endTime + ", status="
 				+ status + "]";
 	}
 	

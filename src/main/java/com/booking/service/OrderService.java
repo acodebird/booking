@@ -11,6 +11,7 @@ import java.util.List;
 public interface OrderService {
     /**
      * 根据id查询一条订单
+     *
      * @param id
      * @return
      */
@@ -18,12 +19,21 @@ public interface OrderService {
 
     /**
      * 更新或新增订单
+     *
      * @param order
      */
     Order save(Order order);
 
     /**
+     * 获取所有订单
+     *
+     * @return
+     */
+    List<Order> findAll();
+
+    /**
      * 条件查询一页订单
+     *
      * @param spec
      * @param pageable
      * @return
@@ -32,6 +42,7 @@ public interface OrderService {
 
     /**
      * 为某一个用户查询其所有订单
+     *
      * @param spec
      * @return
      */
@@ -39,12 +50,14 @@ public interface OrderService {
 
     /**
      * 根据id删除一条订单
+     *
      * @param id
      */
     void deleteById(Long id);
 
     /**
      * 根据id查找一批订单
+     *
      * @param ids
      * @return
      */
@@ -52,7 +65,15 @@ public interface OrderService {
 
     /**
      * 批量删除订单
+     *
      * @param orders
      */
     void deleteAll(List<Order> orders);
+
+    /**
+     * 判断订单是否需要取消
+     *
+     * @param order
+     */
+    void isCancel(Order order);
 }

@@ -37,9 +37,9 @@ public class OrderQueryDTO implements Serializable {
             public Predicate toPredicate(Root<Order> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> predicate = new ArrayList<>();
                 //拼接酒店名称
-                if (StringUtils.isNotBlank(orderQueryDTO.getHName()) && !"ALL".equals(orderQueryDTO.getHName())) {
-                    predicate.add(criteriaBuilder.equal(root.get("hotel").get("hname").as(String.class),
-                            orderQueryDTO.getHName()));
+                if (StringUtils.isNotBlank(orderQueryDTO.getHName())) {
+                    predicate.add(criteriaBuilder.like(root.get("hotel").get("hname").as(String.class),
+                            "%" + orderQueryDTO.getHName() + "%"));
                 }
                 //拼接价格区间
                 if (null != orderQueryDTO.getMaxPrice() || null != orderQueryDTO.getMinPrice()) {

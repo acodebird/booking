@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Date;
+import java.util.List;
 
 @SpringBootTest
 public class TestOrderService {
@@ -24,7 +25,7 @@ public class TestOrderService {
 
     @Test
     public void testSaveOrder() {
-        for(int j=0;j<5;j++){
+        for (int j = 0; j < 5; j++) {
             for (int i = 1; i <= 5; i++) {
                 Order order = new Order();
                 order.setCount(2);
@@ -39,11 +40,21 @@ public class TestOrderService {
                 else order.setStatus(OrderStatusEnum.CANCEL);
                 order.setHotel(hotelService.findById(2L));
                 order.setRoom(roomService.findById(10L));
-                order.setUser(userService.getUserById(90L+j));
+                order.setUser(userService.getUserById(90L + j));
                 order.setRemark("无烟房,外窗");
                 order.setCheckInPerson(order.getUser().getUname());
                 orderService.save(order);
             }
         }
+    }
+
+    @Test
+    public void testGenarateCancelTime() {
+        List<Order> orders = orderService.findAll();
+        orders.forEach(order -> {
+            long cancelTime = order.getCreateTime().getTime() + 30 * 60 * 1000;
+            order.setCancelTime(new Date(cancelTime));
+            orderService.save(order);
+        });
     }
 }
