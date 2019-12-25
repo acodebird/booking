@@ -35,7 +35,7 @@ public class RoomController {
 	private HotelService hotelService;
 	
 	/**
-     * 获取一页酒店
+     * 获取一页房间
      * @param pageable
      * @return
      */

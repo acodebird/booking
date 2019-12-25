@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.booking.domain.Hotel;
-import com.booking.domain.Order;
 import com.booking.domain.Room;
 import com.booking.dto.HotelDetailDTO;
 import com.booking.dto.HotelQueryDTO;
@@ -50,6 +49,12 @@ public class HotelController {
         }
         Page<Hotel> page = Page.empty(pageable.getPageable());
         page = hotelService.findAll(HotelQueryDTO.getSpecification(hotelQueryDTO), pageable.getPageable());
+        Iterator<Hotel> iterator = page.iterator();
+        while(iterator.hasNext()) {
+        	Hotel hotel = iterator.next();
+        	Double landprice = roomService.getLandpriceByHid(hotel.getHid());
+        	hotel.setLandprice(landprice);
+        }
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(page);
     }
     /**

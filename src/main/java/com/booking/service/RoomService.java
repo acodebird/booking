@@ -48,4 +48,10 @@ public interface RoomService {
      * @return
      */
     List<Room> findByHid(Long hid);
+    /**
+     * 根据酒店id后去房间最低价
+     * @param hid
+     * @return
+     */
+	Double getLandpriceByHid(Long hid);
 }

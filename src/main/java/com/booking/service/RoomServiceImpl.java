@@ -79,4 +79,13 @@ public class RoomServiceImpl implements RoomService {
 	public List<Room> findByHid(Long hid) {
 		return roomRepository.findByHid(hid);
 	}
+	/**
+     * 根据酒店id后去房间最低价
+     * @param hid
+     * @return
+     */
+	@Override
+	public Double getLandpriceByHid(Long hid) {
+		return roomRepository.getLandpriceByHid(hid);
+	}
 }
