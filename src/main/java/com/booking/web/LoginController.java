@@ -26,7 +26,12 @@ public class LoginController {
     @GetMapping(value="/isLogin")
     public ResponseEntity<String> isLogin (HttpSession session) {
         System.out.println("isLogin");
-        return ResponseEntity.ofSuccess().status(HttpStatus.BAD_REQUEST).data((User)session.getAttribute(LoginServiceImpl.LOGIN_SESSION_TOKEN));
+        User user=(User)session.getAttribute(LoginServiceImpl.LOGIN_SESSION_TOKEN);
+        if(null==user){
+            System.out.println("not login");
+            return ResponseEntity.ofFailed().data("user_not_login");
+        }
+        return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(user);
     }
 
     // 获取RSA公钥

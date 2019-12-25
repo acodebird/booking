@@ -71,7 +71,7 @@ public class LoginServiceImpl implements LoginService {
         MailInfo mailInfo=new MailInfo();
         mailInfo.setTo(email);
         mailInfo.setSubject("验证码");
-        //mailService.sendTemplateMail(mailInfo,"thymeleaf/verification.html","code",code);
+        mailService.sendTemplateMail(mailInfo,"verification.html","code",code);
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(captchaInfo);
     }
 
@@ -207,7 +207,7 @@ public class LoginServiceImpl implements LoginService {
         MailInfo mailInfo=new MailInfo();
         mailInfo.setTo(email);
         mailInfo.setSubject("找回密码");
-        mailService.sendTemplateMail(mailInfo,"thymeleaf/forgottenPassword.html",variable);
+        mailService.sendTemplateMail(mailInfo,"forgottenPassword.html",variable);
 
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data("success");
     }
