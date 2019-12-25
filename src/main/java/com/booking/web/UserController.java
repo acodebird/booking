@@ -1,6 +1,5 @@
 package com.booking.web;
 
-import com.booking.domain.Comment;
 import com.booking.domain.Order;
 import com.booking.domain.User;
 import com.booking.dto.UserQueryDTO;
@@ -29,8 +28,11 @@ public class UserController {
 
     // 根据用户 id 获取用户信息
     @GetMapping("/{uid}")
-    public User findById (@PathVariable("uid") Long uid) {
+    public User findById (@PathVariable("uid") Long uid) throws Exception {
         System.out.println("findById");
+        if(null==uid){
+            throw new Exception("parameter_error");
+        }
         return userService.getUserById(uid);
     }
 
@@ -61,12 +63,16 @@ public class UserController {
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data("Update User Success.");
     }
 
-    // 批量更新用户
+    // 批量更新用户状态
     @PutMapping
-    public ResponseEntity<String> updateBatch (@RequestBody List<User> users) {
-        System.out.println("updateBatch");
-        if(users==null) {
+    public ResponseEntity<String> updateStatusBatch (@RequestBody List<Long> uids, @RequestHeader("status") Boolean newStatus) {
+        System.out.println("updateStatusBatch");
+        if(null==uids||null==newStatus) {
             return ResponseEntity.ofFailed().status(HttpStatus.BAD_REQUEST).data("parameter_error");
+        }
+        List<User>users=userService.findAll(uids);
+        for(User user:users){
+            user.setEnable(newStatus);
         }
         userService.saveAll(users);
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data("Update User Success.");
@@ -76,7 +82,7 @@ public class UserController {
     @DeleteMapping(value = "{uid}")
     public ResponseEntity<String> delete(@PathVariable("uid") Long uid) {
         System.out.println("delete uid="+uid);
-        if (uid == null) {
+        if (null==uid) {
             return ResponseEntity.ofFailed().status(HttpStatus.BAD_REQUEST).data("parameter_error");
         }
         userService.deleteById(uid);
@@ -87,7 +93,7 @@ public class UserController {
     @DeleteMapping
     public ResponseEntity<String> deleteBatch(@RequestBody List<Long> uids) {
         System.out.println("deleteBatch");
-        if (uids == null) {
+        if (null==uids) {
             return ResponseEntity.ofFailed().status(HttpStatus.BAD_REQUEST).data("parameter_error");
         }
         userService.deleteAll(uids);

@@ -8,7 +8,7 @@ import lombok.Setter;
 public class CaptchaInfo {
     private String token;
     private String code;
-    // private String img;
+    private String img;
 
     @Override
     public String toString() {

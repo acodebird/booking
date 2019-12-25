@@ -101,14 +101,14 @@ public class UserServiceImpl implements UserService {
 //	public Page<User> findAll(Pageable pageable){
 //		return userRepository.findAll(pageable);
 //	}
-	@Transactional(readOnly=true)
-	public List<User> findAll(){
-		return (List<User>) userRepository.findAll();
-	}
 //	@Transactional(readOnly=true)
-//	public List<User> findAllById(List<Long> uids){
-//		return (List<User>) userRepository.findAllById(uids);
+//	public List<User> findAll(){
+//		return (List<User>) userRepository.findAll();
 //	}
+	@Transactional(readOnly=true)
+	public List<User> findAll(List<Long> uids){
+		return (List<User>) userRepository.findAllById(uids);
+	}
 
 	// 获取用户订单
 	@Transactional(readOnly=true)

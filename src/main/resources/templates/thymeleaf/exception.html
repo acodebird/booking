@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>exception</title>
+</head>
+<body>
+<p>message: <apan th:text="${message}"></apan></p>
+<hr/>
+<div th:each="stack:${StackTrace}">
+    <p> <apan th:text="${stack}"></apan></p>
+</div>
+
+</body>
+</html>

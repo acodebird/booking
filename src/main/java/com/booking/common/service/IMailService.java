@@ -1,6 +1,6 @@
 package com.booking.common.service;
 
-import com.booking.utils.MailInfo;
+import com.booking.common.domain.MailInfo;
 
 import java.util.Map;
 

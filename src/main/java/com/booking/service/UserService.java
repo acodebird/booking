@@ -29,8 +29,8 @@ public interface UserService {
 	// 获取用户列表
 	public Page<User> findAll(Specification<User> spec, Pageable pageable);
 	//public Page<User> findAll(Pageable pageable);
-	public List<User> findAll();
-	//public List<User> findAllById(List<Long> uids);
+	//public List<User> findAll();
+	public List<User> findAll(List<Long> uids);
 
 	// 获取用户订单
 	public List<Order> findAllOrder(Specification<Order> spec);

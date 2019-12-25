@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 
-import com.booking.utils.MailInfo;
+import com.booking.common.domain.MailInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -75,7 +75,7 @@ public class MailService implements IMailService{
 		messageHelper.setSubject(mailInfo.getSubject()); 	// 邮件主题
 		messageHelper.setText(mailInfo.getText(), mailInfo.getIshtml()); // 邮件内容
 		
-		//messageHelper.setCc(mailInfo.getFrom());
+		messageHelper.setCc(mailInfo.getFrom());
 		if (!StringUtils.isEmpty(mailInfo.getCc())) { 		// 抄送
 			messageHelper.setCc(mailInfo.getCc().split(","));
 		}
@@ -100,7 +100,7 @@ public class MailService implements IMailService{
 			mailInfo.setSentDate(new Date());
 		}
 		messageHelper.setSentDate(mailInfo.getSentDate());
-		
+		System.out.println("发送邮件到: "+mailInfo.getTo());
 		mailSender.send(messageHelper.getMimeMessage()); 	// 正式发送邮件
 		
 		mailInfo.setStatus("ok");

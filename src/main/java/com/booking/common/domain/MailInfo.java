@@ -1,4 +1,4 @@
-package com.booking.utils;
+package com.booking.common.domain;
 
 import java.io.File;
 import java.util.Date;

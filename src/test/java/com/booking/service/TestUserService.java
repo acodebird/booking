@@ -4,13 +4,12 @@ import com.booking.common.service.IMailService;
 import com.booking.domain.Order;
 import com.booking.domain.User;
 import com.booking.dto.UserQueryDTO;
-import com.booking.utils.MailInfo;
+import com.booking.common.domain.MailInfo;
 import com.booking.utils.SHA2;
 import com.booking.utils.STablePageRequest;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
