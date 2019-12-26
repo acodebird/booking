@@ -33,7 +33,6 @@ public class UserServiceImpl implements UserService {
 
 	public static final String EHCACHE_NAME = "user";
 
-	// 根据用户 id 获取用户信息
 	@Transactional(readOnly=true)
 	@Cacheable(value=EHCACHE_NAME,key="'user_'+#uid")
 	public User getUserById(Long uid){

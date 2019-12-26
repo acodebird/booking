@@ -48,13 +48,20 @@ public class LoginServiceImpl implements LoginService {
     public static final String EHCACHE_RSA = "rsa";
     public static final String EHCACHE_TEMP_PASSWORD = "temp_password";
 
+    // 获取rsa公钥
+    // email:要获取rsa公钥的用户email
+    // return:返回储存rsa公钥的响应实体ResponseEntity<String>
     public ResponseEntity<String> getPublicKey(String email){
         RSA rsa=new RSA();
         Element element=new Element(email,rsa);
         cacheManager.getCache(EHCACHE_RSA).put(element);
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(rsa.getPublicKeyBase64());
     }
-    public ResponseEntity<CaptchaInfo> getCaptcha(String email) throws IOException, MessagingException {
+
+    // 获取邮件验证码
+    // email:要获取邮箱验证码的用户email
+    // return:返回储存验证信息(验证码和验证码token)的响应实体ResponseEntity<CaptchaInfo>
+    public ResponseEntity<CaptchaInfo> getCaptcha(String email) throws MessagingException {
         CaptchaInfo captchaInfo=new CaptchaInfo();
         StringBuffer code=new StringBuffer();
 
@@ -70,11 +77,13 @@ public class LoginServiceImpl implements LoginService {
 
         MailInfo mailInfo=new MailInfo();
         mailInfo.setTo(email);
-        mailInfo.setSubject("验证码");
-        mailService.sendTemplateMail(mailInfo,"verification.html","code",code);
+        mailInfo.setSubject("注册验证码");
+        //mailService.sendTemplateMail(mailInfo,"verification.html","code",code);
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(captchaInfo);
     }
 
+    // 获取图形验证信息
+    // return:返回储存验证信息(验证码, 验证码图片, 验证码token)的响应实体ResponseEntity<CaptchaInfo>
     public ResponseEntity<CaptchaInfo> getGraphCaptcha() throws IOException {
         //定义图形验证码的长和宽
         LineCaptcha lineCaptcha = CaptchaUtil.createLineCaptcha(85, 30,4,100);
@@ -99,6 +108,18 @@ public class LoginServiceImpl implements LoginService {
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(captchaInfo);
     }
 
+    // 更新个人信息
+    // user:带有更新信息的User
+    // return:返回储存相关代码(views/utils/errorTips.js)的响应实体ResponseEntity<String>
+    public ResponseEntity<String> update(User user){
+        userService.save(user);
+        return ResponseEntity.ofSuccess().status(HttpStatus.OK).data("success");
+    }
+
+    // 用户登录
+    // password:用户密码
+    // email:用户email
+    // return:返回储存相关代码(views/utils/errorTips.js)的响应实体ResponseEntity<String>
     public ResponseEntity<String> login(String password, String email, HttpSession session) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         System.out.println("email:"+email);
         User user = userService.findByEmail(email);
@@ -131,10 +152,20 @@ public class LoginServiceImpl implements LoginService {
         System.out.println("密码正确, uid:"+user.getUid());
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(user);
     }
+
+    // 用户登出
+    // return:返回储存相关代码(views/utils/errorTips.js)的响应实体ResponseEntity<String>
     public ResponseEntity<String> logout(HttpSession session){
         session.removeAttribute(LOGIN_SESSION_TOKEN);
         return ResponseEntity.ofSuccess().data("logout");
     }
+
+    // 用户注册
+    // user:用户信息(最少包含email和password)
+    // captcha:邮箱验证码
+    // token:验证码token
+    // type:要注册的用户类型
+    // return:返回储存相关代码(views/utils/errorTips.js)的响应实体ResponseEntity<String>
     public ResponseEntity<String> register(User user, String captcha, String token, int type) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         if(userService.existsByEmail(user.getEmail())) {
             return ResponseEntity.ofFailed().data("user_existed");
@@ -178,6 +209,11 @@ public class LoginServiceImpl implements LoginService {
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data("success");
     }
 
+    // 找回密码
+    // email:用户email
+    // code:邮箱验证码
+    // token:验证码token
+    // return:返回储存相关代码(views/utils/errorTips.js)的响应实体ResponseEntity<String>
     public ResponseEntity<String> forgot(String email, String code, String token) throws MessagingException, UnsupportedEncodingException, NoSuchAlgorithmException {
         System.out.println("email:" + email);
 
@@ -212,6 +248,13 @@ public class LoginServiceImpl implements LoginService {
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data("success");
     }
 
+    // 更换密码
+    // user:本地(服务器)用户信息
+    // password:正在使用的密码
+    // newPassword:新密码
+    // code:邮箱验证码
+    // token:验证码token
+    // return:返回储存相关代码(views/utils/errorTips.js)的响应实体ResponseEntity<String>
     public ResponseEntity<String> changePassword(User user, String password, String newPassword, String code, String token) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         String vaildCaptcha=validCaptcha(code,EHCACHE_CAPTCHA,token);
         if(!VAILD_CAPTCHA_SUCCESS.equals(vaildCaptcha)){
@@ -239,6 +282,11 @@ public class LoginServiceImpl implements LoginService {
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data("success");
     }
 
+    // 检查验证码是否正确
+    // captcha:用户输入的验证码
+    // cacheName:本地存储验证码的cache名
+    // key:cache上验证码对应的key
+    // return:如果验证码正确则返回LoginServiceImpl.VAILD_CAPTCHA_SUCCESS 否则返回相关错误代码(views/utils/errorTips.js)
     private String validCaptcha(final String captcha,final String cacheName,final String key){
         Element element=cacheManager.getCache(cacheName).get(key);
         if (null == element) {
@@ -251,6 +299,8 @@ public class LoginServiceImpl implements LoginService {
         return VAILD_CAPTCHA_SUCCESS;
     }
 
+    // 获取随机密码
+    // return:返回随机密码String
     private String getRandomPassword(){
         StringBuffer password=new StringBuffer();
         int temp=0;
@@ -265,7 +315,11 @@ public class LoginServiceImpl implements LoginService {
         }
         return password.toString();
     }
-
+    // 解码被rsa加密后的文本
+    // password:被rsa加密后的文本
+    // cacheName:本地存储RSA对象的cache名
+    // key:cache上RSA对象对应的key
+    // return:如果解码成功返回被解码的文本, 否则返回null
     private String decodePassword(final String password,final String cacheName,final String key){
         Element element = cacheManager.getCache(cacheName).get(key);
         if (null == element) {
