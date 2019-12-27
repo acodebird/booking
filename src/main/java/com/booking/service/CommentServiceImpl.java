@@ -113,4 +113,11 @@ public class CommentServiceImpl implements CommentService {
 	public Long countType(Long hid, Integer type) {
 		return commentRepository.countType(hid, type);
 	}
+	/**
+     * 统计评论数量
+     */
+	@Override
+	public Long count() {
+		return commentRepository.count();
+	}
 }

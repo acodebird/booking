@@ -2,6 +2,7 @@ package com.booking.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -44,6 +45,7 @@ public class Hotel implements Serializable {
 	@Size(min=11,max=11)
 	private String phone; //酒店电话
 	private HotelTypeEnum type; //酒店类型(APARTMENT：公寓, HOMESTAY：民宿, HOSTEL：青旅, ECONOMY：经济连锁, HIGNEND：高级连锁)
+	@Column(columnDefinition = "Float(10,2)")
 	private Float rate; //酒店评分
 	private String img; //酒店图片
 	@Transient

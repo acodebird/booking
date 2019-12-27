@@ -66,4 +66,8 @@ public interface CommentService {
 	 * @return
 	 */
 	Long countType(Long hid, Integer type);
+	/**
+     * 统计评论数量
+     */
+    Long count();
 }

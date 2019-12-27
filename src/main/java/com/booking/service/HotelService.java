@@ -35,4 +35,5 @@ public interface HotelService {
      * 批量删除酒店
 	 */
     void deleteAll(List<Long> ids);
+    
 }
