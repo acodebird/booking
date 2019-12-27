@@ -19,4 +19,5 @@ public interface LoginService {
     public ResponseEntity<String> register(User user, String captcha, String token, int type) throws UnsupportedEncodingException, NoSuchAlgorithmException;
     public ResponseEntity<String> forgot(String account, String code, String token) throws MessagingException, UnsupportedEncodingException, NoSuchAlgorithmException;
     public ResponseEntity<String> changePassword(User user, String password, String newPassword, String code, String token) throws UnsupportedEncodingException, NoSuchAlgorithmException;
+    public ResponseEntity<String> update(User user);
 }
