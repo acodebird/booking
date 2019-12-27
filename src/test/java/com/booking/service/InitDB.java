@@ -1,29 +1,42 @@
 package com.booking.service;
 
-import com.booking.domain.*;
-import com.booking.domain.Order;
-import com.booking.dto.UserQueryDTO;
-import com.booking.enums.HotelTypeEnum;
-import com.booking.enums.OrderStatusEnum;
-import com.booking.enums.PayTypeEnum;
-import com.booking.enums.RoomTypeEnum;
-import com.booking.repository.*;
-import com.booking.utils.SHA2;
-import com.booking.utils.STablePageRequest;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.persistence.criteria.*;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.junit.jupiter.api.Test;
+//import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import com.booking.domain.Comment;
+import com.booking.domain.Hotel;
+import com.booking.domain.Order;
+import com.booking.domain.Room;
+import com.booking.domain.User;
+import com.booking.enums.CommentTypeEnum;
+import com.booking.enums.HotelTypeEnum;
+import com.booking.enums.OrderStatusEnum;
+import com.booking.enums.PayTypeEnum;
+import com.booking.enums.RoomTypeEnum;
+import com.booking.repository.CommentRepository;
+import com.booking.repository.HotelRepository;
+import com.booking.repository.OrderRepository;
+import com.booking.repository.RoomRepository;
+import com.booking.repository.UserRepository;
+import com.booking.utils.SHA2;
 
 /*
 运行initDB初始化数据库
@@ -173,18 +186,18 @@ public class InitDB {
 
     public void saveComment() {
         List<Comment> comments = new ArrayList<Comment>();
-        List<Order> orders = (List<com.booking.domain.Order>) orderRepository.findAll();
+        List<Order> orders = (List<Order>) orderRepository.findAll();
         for (Order order : orders) {
             for (int i = 0; i < commentPerOrderNumber; i++) {
-                Comment commont = new Comment();
-                commont.setContent("comment_" + i);
-                commont.setDate(new Date());
-                commont.setHotel(order.getHotel());
-                commont.setOrder(order);
-                commont.setRate((float) i);
-                commont.setType(i % 3);
-                commont.setUser(order.getUser());
-                comments.add(commont);
+                Comment comment=new Comment();
+                comment.setContent("这是我住过的最差劲的酒店，一晚上将近1000的房子，到了晚上七点多外面就开始唱歌，唱到11点才结束，我想休息一下都不行，还说这个没办法解决。我告诉你们怎么解决，把所有的城景套房全部下架，你们既然定了这么高的价格，就要给消费者相对应的服务和体验。 洗手间里水管是漏的，一用洗手间就满地的水。热水也要放很久很久水才有，真不知道这酒店凭什么是这个价格。真牛逼"+i);
+                comment.setDate(new Date());
+                comment.setOrder(order);
+                comment.setRate(5f);
+                comment.setType(CommentTypeEnum.AVERAGE);
+                comment.setUser(order.getUser());
+                comment.setHotel(order.getHotel());
+                comments.add(comment);
             }
         }
         commentRepository.saveAll(comments);

@@ -9,9 +9,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.booking.domain.Hotel;
 import com.booking.domain.Room;
 import com.booking.domain.User;
+import com.booking.enums.CommentTypeEnum;
 import com.booking.enums.HotelTypeEnum;
 import com.booking.enums.RoomTypeEnum;
-import com.booking.utils.STablePageRequest;
 
 @SpringBootTest
 public class TestHotelService {
@@ -23,6 +23,18 @@ public class TestHotelService {
 
 	@Autowired
 	private RoomService roomService;
+	
+	@Autowired
+	private CommentService commentService;
+	
+	@Test
+    public void testCount() {
+		System.out.println(CommentTypeEnum.AVERAGE.ordinal());
+    	Long average = commentService.countType(29L, CommentTypeEnum.AVERAGE.ordinal());
+    	Long praise = commentService.countType(29L, CommentTypeEnum.PRAISE.ordinal());
+    	Long criticize = commentService.countType(29L, CommentTypeEnum.CRITICIZE.ordinal());
+    	System.out.println("数据呢？"+average+praise+criticize);
+    }
 	
 	@Test
 	public void test1() {

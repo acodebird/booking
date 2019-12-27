@@ -8,7 +8,8 @@ import com.booking.common.domain.MailInfo;
 import com.booking.utils.SHA2;
 import com.booking.utils.STablePageRequest;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+//import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,6 +29,24 @@ public class TestUserService {
     UserService userService;
     @Autowired
     IMailService mailService;
+    
+    @Test
+    public void saveOneUser() throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        SHA2 sha2=new SHA2();
+    	String salt=sha2.getSalt(128);
+        String password="admin";
+        password=sha2.sha2(password+salt);
+        User user=new User();
+        user.setSalt(salt);
+        user.setUpassword(password);
+        user.setEmail("admin_@example.com");
+        user.setEnable(true);
+        user.setIcon("/upload/user/avatar/default_avatar.jpeg");
+        user.setTelephone("13112136633");
+        user.setType(1);
+        user.setUname("admin");
+        userService.save(user);
+    }
 
     @Test
     public void saveUsers() throws UnsupportedEncodingException, NoSuchAlgorithmException {

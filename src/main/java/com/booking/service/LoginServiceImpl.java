@@ -19,12 +19,15 @@ import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ClassUtils;
+import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Encoder;
 
 import javax.imageio.ImageIO;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -42,19 +45,30 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     IMailService mailService;
 
-    public static final String VAILD_CAPTCHA_SUCCESS = "1";
+    public static final String VAILD_SUCCESS = "1";
     public static final String LOGIN_SESSION_TOKEN = "user";
     public static final String EHCACHE_CAPTCHA = "captcha";
     public static final String EHCACHE_RSA = "rsa";
     public static final String EHCACHE_TEMP_PASSWORD = "temp_password";
 
+    public static final String PATH=ClassUtils.getDefaultClassLoader().getResource("").getPath();
+    public static final String STATIC="static";
+    public static final String AVATAR_PATH="/upload/user/avatar/";
+
+    // 获取rsa公钥
+    // email:要获取rsa公钥的用户email
+    // return:返回储存rsa公钥的响应实体ResponseEntity<String>
     public ResponseEntity<String> getPublicKey(String email){
         RSA rsa=new RSA();
         Element element=new Element(email,rsa);
         cacheManager.getCache(EHCACHE_RSA).put(element);
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(rsa.getPublicKeyBase64());
     }
-    public ResponseEntity<CaptchaInfo> getCaptcha(String email) throws IOException, MessagingException {
+
+    // 获取邮件验证码
+    // email:要获取邮箱验证码的用户email
+    // return:返回储存验证信息(验证码和验证码token)的响应实体ResponseEntity<CaptchaInfo>
+    public ResponseEntity<CaptchaInfo> getCaptcha(String email) throws MessagingException {
         CaptchaInfo captchaInfo=new CaptchaInfo();
         StringBuffer code=new StringBuffer();
 
@@ -70,11 +84,16 @@ public class LoginServiceImpl implements LoginService {
 
         MailInfo mailInfo=new MailInfo();
         mailInfo.setTo(email);
-        mailInfo.setSubject("验证码");
-        mailService.sendTemplateMail(mailInfo,"verification.html","code",code);
+        mailInfo.setSubject("注册验证码");
+        mailService.sendTemplateMail(mailInfo,"verification.html","code",code.toString());
+
+        System.out.println("邮箱验证码:"+code);
+
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(captchaInfo);
     }
 
+    // 获取图形验证信息
+    // return:返回储存验证信息(验证码, 验证码图片, 验证码token)的响应实体ResponseEntity<CaptchaInfo>
     public ResponseEntity<CaptchaInfo> getGraphCaptcha() throws IOException {
         //定义图形验证码的长和宽
         LineCaptcha lineCaptcha = CaptchaUtil.createLineCaptcha(85, 30,4,100);
@@ -96,9 +115,15 @@ public class LoginServiceImpl implements LoginService {
         Element element=new Element(token,lineCaptcha.getCode());
         cacheManager.getCache(EHCACHE_CAPTCHA).put(element);
 
+        System.out.println("图片验证码:"+lineCaptcha.getCode());
+
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(captchaInfo);
     }
 
+    // 用户登录
+    // password:用户密码
+    // email:用户email
+    // return:返回储存相关代码(views/utils/errorTips.js)的响应实体ResponseEntity<String>
     public ResponseEntity<String> login(String password, String email, HttpSession session) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         System.out.println("email:"+email);
         User user = userService.findByEmail(email);
@@ -118,11 +143,9 @@ public class LoginServiceImpl implements LoginService {
         System.out.println("密码："+password);
         password = sha.sha2(password + user.getSalt());
 
-        if (!password.equals(user.getUpassword())) {
-            Element element=cacheManager.getCache(EHCACHE_TEMP_PASSWORD).get(email);
-            if(null==element||!password.equals((String)element.getObjectValue())){
-                return ResponseEntity.ofFailed().data("password_error");
-            }
+        String vaild=validPassword(user.getUpassword(), password, EHCACHE_TEMP_PASSWORD,email);
+        if(!VAILD_SUCCESS.equals(vaild)){
+            return ResponseEntity.ofFailed().data(vaild);
         }
 
         session.setAttribute(LOGIN_SESSION_TOKEN,user);
@@ -131,10 +154,20 @@ public class LoginServiceImpl implements LoginService {
         System.out.println("密码正确, uid:"+user.getUid());
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(user);
     }
+
+    // 用户登出
+    // return:返回储存相关代码(views/utils/errorTips.js)的响应实体ResponseEntity<String>
     public ResponseEntity<String> logout(HttpSession session){
         session.removeAttribute(LOGIN_SESSION_TOKEN);
         return ResponseEntity.ofSuccess().data("logout");
     }
+
+    // 用户注册
+    // user:用户信息(最少包含email和password)
+    // captcha:邮箱验证码
+    // token:验证码token
+    // type:要注册的用户类型
+    // return:返回储存相关代码(views/utils/errorTips.js)的响应实体ResponseEntity<String>
     public ResponseEntity<String> register(User user, String captcha, String token, int type) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         if(userService.existsByEmail(user.getEmail())) {
             return ResponseEntity.ofFailed().data("user_existed");
@@ -146,7 +179,7 @@ public class LoginServiceImpl implements LoginService {
         }
 
         String vaildCaptcha=validCaptcha(captcha,EHCACHE_CAPTCHA,token);
-        if(!VAILD_CAPTCHA_SUCCESS.equals(vaildCaptcha)){
+        if(!VAILD_SUCCESS.equals(vaildCaptcha)){
             return ResponseEntity.ofFailed().data(vaildCaptcha);
         }
 
@@ -178,11 +211,16 @@ public class LoginServiceImpl implements LoginService {
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data("success");
     }
 
+    // 找回密码
+    // email:用户email
+    // code:邮箱验证码
+    // token:验证码token
+    // return:返回储存相关代码(views/utils/errorTips.js)的响应实体ResponseEntity<String>
     public ResponseEntity<String> forgot(String email, String code, String token) throws MessagingException, UnsupportedEncodingException, NoSuchAlgorithmException {
         System.out.println("email:" + email);
 
         String vaildCaptcha=validCaptcha(code,EHCACHE_CAPTCHA,token);
-        if(!VAILD_CAPTCHA_SUCCESS.equals(vaildCaptcha)){
+        if(!VAILD_SUCCESS.equals(vaildCaptcha)){
             return ResponseEntity.ofFailed().data(vaildCaptcha);
         }
 
@@ -212,10 +250,17 @@ public class LoginServiceImpl implements LoginService {
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data("success");
     }
 
-    public ResponseEntity<String> changePassword(User user, String password, String newPassword, String code, String token) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        String vaildCaptcha=validCaptcha(code,EHCACHE_CAPTCHA,token);
-        if(!VAILD_CAPTCHA_SUCCESS.equals(vaildCaptcha)){
-            return ResponseEntity.ofFailed().data(vaildCaptcha);
+    // 更换密码
+    // user:本地(服务器)用户信息
+    // password:正在使用的密码
+    // newPassword:新密码
+    // code:邮箱验证码
+    // token:验证码token
+    // return:返回储存相关代码(views/utils/errorTips.js)的响应实体ResponseEntity<String>
+    public ResponseEntity<String> updatePassword(User user, String password, String newPassword, String code, String token) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        String vaild=validCaptcha(code,EHCACHE_CAPTCHA,token);
+        if(!VAILD_SUCCESS.equals(vaild)){
+            return ResponseEntity.ofFailed().data(vaild);
         }
 
         String email=user.getEmail();
@@ -225,11 +270,10 @@ public class LoginServiceImpl implements LoginService {
             return ResponseEntity.ofFailed().data("time_out");
         }
 
-        if (!password.equals(user.getUpassword())) {
-            Element element=cacheManager.getCache(EHCACHE_TEMP_PASSWORD).get(email);
-            if(null==element||!password.equals((String)element.getObjectValue())){
-                return ResponseEntity.ofFailed().data("password_error");
-            }
+        password=sha.sha2(password+user.getSalt());
+        vaild=validPassword(user.getUpassword(), password, EHCACHE_TEMP_PASSWORD,email);
+        if(!VAILD_SUCCESS.equals(vaild)){
+            return ResponseEntity.ofFailed().data(vaild);
         }
 
         newPassword=sha.sha2(newPassword+user.getSalt());
@@ -239,6 +283,47 @@ public class LoginServiceImpl implements LoginService {
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data("success");
     }
 
+    // 验证邮箱是否可用
+    // code:邮箱验证码
+    // token:验证码token
+    // return:返回储存相关代码(views/utils/errorTips.js)的响应实体ResponseEntity<String>
+    public ResponseEntity<String> vaildEmailFunction(String code, String token){
+        String vaildCaptcha=validCaptcha(code,EHCACHE_CAPTCHA,token);
+        if(!VAILD_SUCCESS.equals(vaildCaptcha)){
+            return ResponseEntity.ofFailed().data(vaildCaptcha);
+        }
+        return ResponseEntity.ofSuccess().status(HttpStatus.OK).data("success");
+    }
+
+    // 更新个人信息
+    // user:带有更新信息的User
+    // return:返回储存相关代码(views/utils/errorTips.js)的响应实体ResponseEntity<String>
+    public ResponseEntity<String> updateInfo(User user){
+        userService.save(user);
+        return ResponseEntity.ofSuccess().status(HttpStatus.OK).data("success");
+    }
+
+    // 更新头像
+    // multipartFile:用户上传的头像
+    // user:登录用户的用户信息
+    // return:返回储存相关代码(views/utils/errorTips.js)的响应实体ResponseEntity<String>
+    public ResponseEntity<String> updateAvatar(MultipartFile multipartFile, User user) throws IOException {
+        System.out.println(multipartFile.getOriginalFilename());
+        String parentPath=PATH+STATIC;
+        String path=AVATAR_PATH+user.getUid()+getExtense(multipartFile.getOriginalFilename());
+        multipartFile.transferTo(new File(parentPath+path));
+        user.setIcon(path);
+        userService.save(user);
+        System.out.print("头像保存为:");
+        System.out.println(parentPath+path);
+        return ResponseEntity.ofSuccess().status(HttpStatus.OK).data("success");
+    }
+
+    // 检查验证码是否正确
+    // captcha:用户输入的验证码
+    // cacheName:本地存储验证码的cache名
+    // key:cache上验证码对应的key
+    // return:如果验证码正确则返回LoginServiceImpl.VAILD_SUCCESS 否则返回相关错误代码(views/utils/errorTips.js)
     private String validCaptcha(final String captcha,final String cacheName,final String key){
         Element element=cacheManager.getCache(cacheName).get(key);
         if (null == element) {
@@ -248,9 +333,27 @@ public class LoginServiceImpl implements LoginService {
             return "captcha_error";
         }
         cacheManager.getCache(EHCACHE_CAPTCHA).remove(key);
-        return VAILD_CAPTCHA_SUCCESS;
+        return VAILD_SUCCESS;
     }
 
+    // 检查密码是否正确
+    // target:正确的被sha2加密后的密码(password+salt)
+    // password:用户输入的被sha2加密后的密码
+    // cacheName:本地存临时密码的cache名
+    // key:cache上临时密码对应的key
+    // return:如果密码正确则返回LoginServiceImpl.VAILD_SUCCESS 否则返回相关错误代码(views/utils/errorTips.js)
+    private String validPassword(final String target, String password, final String cacheName,final String key) {
+        if (!password.equals(target)) {
+            Element element=cacheManager.getCache(cacheName).get(key);
+            if(null==element||!password.equals((String)element.getObjectValue())){
+                return "password_error";
+            }
+        }
+        return VAILD_SUCCESS;
+    }
+
+    // 获取随机密码
+    // return:返回随机密码String
     private String getRandomPassword(){
         StringBuffer password=new StringBuffer();
         int temp=0;
@@ -265,7 +368,11 @@ public class LoginServiceImpl implements LoginService {
         }
         return password.toString();
     }
-
+    // 解码被rsa加密后的文本
+    // password:被rsa加密后的文本
+    // cacheName:本地存储RSA对象的cache名
+    // key:cache上RSA对象对应的key
+    // return:如果解码成功返回被解码的文本, 否则返回null
     private String decodePassword(final String password,final String cacheName,final String key){
         Element element = cacheManager.getCache(cacheName).get(key);
         if (null == element) {
@@ -274,5 +381,13 @@ public class LoginServiceImpl implements LoginService {
         RSA rsa = (RSA) (element.getObjectValue());
         byte[] real = rsa.decrypt(Base64.decodeBase64(password), KeyType.PrivateKey);
         return StrUtil.str(real, CharsetUtil.CHARSET_UTF_8);
+    }
+
+    // 获取文件扩展名 例如(.jpg)
+    // fileName:文件名
+    // return:如果有扩展名则返回扩展名 否则返回空字符串
+    private String getExtense(final String fileName){
+        int lastIndex=fileName.lastIndexOf('.');
+        return lastIndex<0?"":fileName.substring(lastIndex);
     }
 }
