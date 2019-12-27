@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.booking.domain.Hotel;
 import com.booking.domain.Room;
 import com.booking.repository.RoomRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class RoomServiceImpl implements RoomService {
@@ -23,6 +24,7 @@ public class RoomServiceImpl implements RoomService {
      * @param room
      */
     @Override
+    @Transactional
     public void save(Room room) {
         roomRepository.save(room);
     }
@@ -33,14 +35,17 @@ public class RoomServiceImpl implements RoomService {
      * @param rid
      */
     @Override
+    @Transactional
     public void deleteById(Long rid) {
         roomRepository.deleteById(rid);
     }
 
-    /*
+    /**
      * 批量删除房间
+     * @param ids
      */
     @Override
+    @Transactional
     public void deleteAll(List<Long> ids) {
         Iterable<Room> rooms = roomRepository.findAllById(ids);
         if (rooms != null) {
@@ -93,7 +98,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     /**
-     * 根据酒店id后去房间最低价
+     * 根据酒店id获取房间最低价
      *
      * @param hid
      * @return
