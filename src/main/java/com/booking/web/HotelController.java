@@ -1,9 +1,8 @@
 package com.booking.web;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
+import com.booking.dto.HotelCriteriaQueryDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +43,42 @@ public class HotelController {
     private CommentService commentService;
 
     /**
+     * 获取所有酒店的品牌
+     *
+     * @return
+     */
+    @GetMapping("/getBrand")
+    public ResponseEntity getHotelBrand() {
+        Set<String> brands = new HashSet<>();
+        hotelService.findAll().forEach(hotel -> brands.add(hotel.getBrand()));
+        return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(brands);
+    }
+
+    /**
+     * 首页-获取酒店列表，多条件查询
+     *
+     * @param hotelCriteriaQueryDTO
+     * @return
+     */
+    @PostMapping("/get")
+    public ResponseEntity<Page<Hotel>> getHotels(@RequestBody HotelCriteriaQueryDTO hotelCriteriaQueryDTO) {
+        Page<Hotel> page = hotelService.findAll(HotelCriteriaQueryDTO.getSpecification(hotelCriteriaQueryDTO), hotelCriteriaQueryDTO.getPageable());
+        Iterator<Hotel> iterator = page.iterator();
+        while (iterator.hasNext()) {
+            Hotel hotel = iterator.next();
+            Double landprice = roomService.getLandpriceByHid(hotel.getHid());
+            if (null == hotel.getLandprice() || hotel.getLandprice() > landprice) {
+                hotel.setLandprice(landprice);
+                hotelService.save(hotel);
+            }
+        }
+
+        return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(page);
+    }
+
+    /*----------------------------------------------------------------------------------------------------------------*/
+
+    /**
      * 获取一页酒店
      *
      * @param pageable
@@ -60,7 +95,10 @@ public class HotelController {
         while (iterator.hasNext()) {
             Hotel hotel = iterator.next();
             Double landprice = roomService.getLandpriceByHid(hotel.getHid());
-            hotel.setLandprice(landprice);
+            if (null == hotel.getLandprice() || hotel.getLandprice() > landprice) {
+                hotel.setLandprice(landprice);
+                hotelService.save(hotel);
+            }
         }
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(page);
     }

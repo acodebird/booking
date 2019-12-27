@@ -13,6 +13,7 @@ import javax.validation.constraints.Size;
 
 import com.booking.enums.HotelTypeEnum;
 
+import com.booking.enums.LocationEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -48,7 +49,9 @@ public class Hotel implements Serializable {
 	@Column(columnDefinition = "Float(10,2)")
 	private Float rate; //酒店评分
 	private String img; //酒店图片
-	@Transient
+	private LocationEnum location; //酒店位置（'商圈/地标', '机场/火车站', '轨道交通', '行政区', '景点'）
+	private String brand; //品牌
+//	@Transient
 	private Double landprice; //酒店最低价
 	
 //	//酒店与订单建立双向关联关系，由多的一方订单维护外键

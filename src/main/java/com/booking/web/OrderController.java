@@ -56,18 +56,20 @@ public class OrderController {
      */
     @PutMapping
     public ResponseEntity add(@RequestBody OrderConfirmDTO orderConfirmDTO, HttpServletRequest request) {
-//        User user = (User) request.getSession().getAttribute("user");
-        User user = userService.getUserById(41L);
+        User user = (User) request.getSession().getAttribute("user");
         Order order = new Order();
         order.setUser(user);
         Room room = roomService.findById(orderConfirmDTO.getRid());
         order.setRoom(room);
         order.setHotel(room.getHotel());
         order.setCreateTime(new Date());
-        order.setCancelTime(new Date(order.getCreateTime().getTime() + 30 * 60 * 1000));
+        order.setCancelTime(new Date(order.getCreateTime().getTime() + 30 * 60 * 1000)); //订单失效时间为半小时后
         order.setPrice(room.getPrice());
         order.setStatus(OrderStatusEnum.UNPAY);
         BeanUtils.copyProperties(orderConfirmDTO, order);
+        //该房型库存量减去房间的预订数量
+        room.setStock(room.getStock() - order.getCount());
+        roomService.save(room);
         //返回订单id
         Long oid = orderService.save(order).getOid();
         HashMap<String, Long> data = new HashMap<>();
@@ -122,7 +124,7 @@ public class OrderController {
                 Predicate[] predicates = new Predicate[predicate.size()];
                 //拼接排序规则
                 return criteriaQuery.where(predicate.toArray(predicates))
-                        .orderBy(criteriaBuilder.desc(root.get("createTime").as(Date.class)))
+                        .orderBy(criteriaBuilder.desc(root.get("create_time").as(Date.class)))
                         .getRestriction();
             }
         });
@@ -156,7 +158,7 @@ public class OrderController {
     @GetMapping
     public ResponseEntity<Page<Order>> findAll(STablePageRequest pageable, OrderQueryDTO orderQueryDTO) {
         if (StringUtils.isBlank(pageable.getSortField())) {
-            pageable.setSortField("createTime");
+            pageable.setSortField("status");
         }
         Page<Order> page = orderService.findAll(OrderQueryDTO.getWhereClause(orderQueryDTO), pageable.getPageable());
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(page);

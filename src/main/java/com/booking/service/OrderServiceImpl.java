@@ -1,6 +1,7 @@
 package com.booking.service;
 
 import com.booking.domain.Order;
+import com.booking.domain.Room;
 import com.booking.enums.OrderStatusEnum;
 import com.booking.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,9 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private RoomService roomService;
 
     /**
      * 通过id查找订单
@@ -137,6 +141,10 @@ public class OrderServiceImpl implements OrderService {
         if (order != null && order.getStatus() == OrderStatusEnum.UNPAY && order.getCancelTime().compareTo(new Date()) <= 0) {
             order.setStatus(OrderStatusEnum.CANCEL);
             orderRepository.save(order);
+            //该订单的房间库存量加上房间的预订数量
+            Room room = order.getRoom();
+            room.setStock(room.getStock() + order.getCount());
+            roomService.save(room);
         }
     }
 }
