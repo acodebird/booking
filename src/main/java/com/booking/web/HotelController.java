@@ -18,10 +18,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.booking.domain.Comment;
 import com.booking.domain.Hotel;
 import com.booking.domain.Room;
 import com.booking.dto.HotelDetailDTO;
 import com.booking.dto.HotelQueryDTO;
+import com.booking.enums.CommentTypeEnum;
+import com.booking.service.CommentService;
 import com.booking.service.HotelService;
 import com.booking.service.RoomService;
 import com.booking.utils.CopyPropertiesUtil;
@@ -36,6 +39,9 @@ public class HotelController {
 
     @Autowired
     private RoomService roomService;
+    
+    @Autowired
+    private CommentService commentService;
 
     /**
      * 获取一页酒店
@@ -115,9 +121,14 @@ public class HotelController {
     public ResponseEntity<HotelDetailDTO> getHotelDetail(@PathVariable("id") Long id) {
         Hotel hotel = hotelService.findById(id);
         List<Room> rooms = roomService.findByHid(hotel.getHid());
+        List<Comment> comments = commentService.findByHid(hotel.getHid());
         HotelDetailDTO hotelDetailDTO = new HotelDetailDTO();
         hotelDetailDTO.setHotel(hotel);
         hotelDetailDTO.setRooms(rooms);
+        hotelDetailDTO.setComments(comments);
+        hotelDetailDTO.setPraise(commentService.countType(hotel.getHid(), CommentTypeEnum.PRAISE.ordinal()));
+        hotelDetailDTO.setAverage(commentService.countType(hotel.getHid(), CommentTypeEnum.AVERAGE.ordinal()));
+        hotelDetailDTO.setCriticize(commentService.countType(hotel.getHid(), CommentTypeEnum.CRITICIZE.ordinal()));
 
         return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(hotelDetailDTO);
     }

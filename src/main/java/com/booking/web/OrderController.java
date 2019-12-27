@@ -170,9 +170,9 @@ public class OrderController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity deleteOrder(@PathVariable("id") Long id) {
-        List<Comment> comments = commentService.findAllByOid(id);
-        if (comments.size() != 0)
-            commentService.deleteAll(comments);
+        Comment comment = commentService.findAllByOid(id);
+        if (comment != null)
+            commentService.deleteByEntity(comment);
 
         orderService.deleteById(id);
         return ResponseEntity.ofSuccess().status(HttpStatus.OK);
@@ -189,9 +189,9 @@ public class OrderController {
         List<Order> orders = orderService.findAllById(ids);
         if (orders.size() != 0) {
             orders.forEach(order -> {
-                List<Comment> comments = commentService.findAllByOid(order.getOid());
-                if (comments.size() != 0)
-                    commentService.deleteAll(comments);
+                Comment comment = commentService.findAllByOid(order.getOid());
+                if (comment != null)
+                    commentService.deleteByEntity(comment);
             });
             orderService.deleteAll(orders);
         }

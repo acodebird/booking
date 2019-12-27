@@ -14,6 +14,9 @@ import java.util.List;
 @Data
 public class HotelDetailDTO {
     private Hotel hotel;
-    private Comment comment;
+    private List<Comment> comments;
     private List<Room> rooms = new ArrayList<>();
+    private Long praise;
+    private Long average;
+    private Long criticize;
 }
