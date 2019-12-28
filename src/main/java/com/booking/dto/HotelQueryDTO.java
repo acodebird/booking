@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import com.booking.domain.Hotel;
 import com.booking.enums.HotelTypeEnum;
+import com.booking.enums.LocationEnum;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +29,8 @@ public class HotelQueryDTO {
 	private HotelTypeEnum typeKey;
 	private Float minRateKey = 0f;
 	private Float maxRateKey = 5f;
+	private LocationEnum locationKey;
+	private String brandKey;
 	
 	@SuppressWarnings("serial")
 	public static Specification<Hotel> getSpecification(final HotelQueryDTO hotelQueryDTO){
@@ -59,6 +62,16 @@ public class HotelQueryDTO {
 				
 				//拼接评分区间,范围查询
 				predicate.add(criteriaBuilder.between(root.get("rate").as(Float.class), hotelQueryDTO.getMinRateKey(), hotelQueryDTO.getMaxRateKey()));
+				
+				//拼接酒店位置,等值查询
+				if(null != hotelQueryDTO.getLocationKey()) {
+					predicate.add(criteriaBuilder.equal(root.get("location").as(LocationEnum.class), hotelQueryDTO.getLocationKey()));
+				}
+				
+				//拼接酒店品牌,模糊匹配
+				if(StringUtils.isNotBlank(hotelQueryDTO.getBrandKey())) {
+					predicate.add(criteriaBuilder.like(root.get("brand").as(String.class), "%" + hotelQueryDTO.getBrandKey() + "%"));
+				}
 				
 				Predicate[] predicates = new Predicate[predicate.size()];
 				return query.where(predicate.toArray(predicates)).getRestriction();
