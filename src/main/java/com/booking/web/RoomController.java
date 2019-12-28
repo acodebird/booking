@@ -2,6 +2,8 @@ package com.booking.web;
 
 import java.util.Arrays;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import com.booking.dto.RoomQueryDTO;
 import com.booking.service.HotelService;
 import com.booking.service.RoomService;
 import com.booking.utils.CopyPropertiesUtil;
+import com.booking.utils.DeleteFileUtil;
 import com.booking.utils.ResponseEntity;
 import com.booking.utils.STablePageRequest;
 
@@ -55,7 +58,9 @@ public class RoomController {
      * @return
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteRoomById(@PathVariable("id") Long id) {
+    public ResponseEntity deleteRoomById(@PathVariable("id") Long id, HttpServletRequest req) {
+    	Room room = roomService.findById(id);
+    	DeleteFileUtil.deleteFile(room.getImg(), req);
     	roomService.deleteById(id);
         return ResponseEntity.ofSuccess().status(HttpStatus.OK);
     }
@@ -65,7 +70,11 @@ public class RoomController {
      * @return
      */
     @DeleteMapping
-    public ResponseEntity deleteRoomByIds(Long[] ids) {
+    public ResponseEntity deleteRoomByIds(Long[] ids, HttpServletRequest req) {
+    	for(Long id : ids) {
+    		Room room = roomService.findById(id);
+        	DeleteFileUtil.deleteFile(room.getImg(), req);
+    	}
     	roomService.deleteAll(Arrays.asList(ids));
     	return ResponseEntity.ofSuccess().status(HttpStatus.OK);
     }

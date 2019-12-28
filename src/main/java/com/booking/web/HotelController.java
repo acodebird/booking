@@ -2,6 +2,8 @@ package com.booking.web;
 
 import java.util.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.booking.dto.HotelCriteriaQueryDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -27,6 +29,7 @@ import com.booking.service.CommentService;
 import com.booking.service.HotelService;
 import com.booking.service.RoomService;
 import com.booking.utils.CopyPropertiesUtil;
+import com.booking.utils.DeleteFileUtil;
 import com.booking.utils.ResponseEntity;
 import com.booking.utils.STablePageRequest;
 
@@ -110,11 +113,14 @@ public class HotelController {
      * @return
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteHotelById(@PathVariable("id") Long id) {
+    public ResponseEntity deleteHotelById(@PathVariable("id") Long id, HttpServletRequest req) {
         List<Room> rooms = roomService.findByHid(id);
         for (Room room : rooms) {
+        	DeleteFileUtil.deleteFile(room.getImg(), req);
             roomService.deleteById(room.getRid());
         }
+        Hotel hotel = hotelService.findById(id);
+        DeleteFileUtil.deleteFile(hotel.getImg(), req);
         hotelService.deleteById(id);
         return ResponseEntity.ofSuccess().status(HttpStatus.OK);
     }
@@ -126,12 +132,15 @@ public class HotelController {
      * @return
      */
     @DeleteMapping
-    public ResponseEntity deleteHotelByIds(Long[] ids) {
+    public ResponseEntity deleteHotelByIds(Long[] ids, HttpServletRequest req) {
         for (Long id : ids) {
             List<Room> rooms = roomService.findByHid(id);
             for (Room room : rooms) {
+            	DeleteFileUtil.deleteFile(room.getImg(), req);
                 roomService.deleteById(room.getRid());
             }
+            Hotel hotel = hotelService.findById(id);
+            DeleteFileUtil.deleteFile(hotel.getImg(), req);
         }
         hotelService.deleteAll(Arrays.asList(ids));
         return ResponseEntity.ofSuccess().status(HttpStatus.OK);
