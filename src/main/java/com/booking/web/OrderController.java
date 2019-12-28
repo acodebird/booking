@@ -90,6 +90,7 @@ public class OrderController {
         orderService.isCancel(order);
         if (order.getStatus() == OrderStatusEnum.UNPAY) {
             order.setStatus(OrderStatusEnum.UNUSE);
+            order.setCancelTime(order.getEndTime()); //订单自动取消日期改为离店日期
             orderService.save(order);
             return ResponseEntity.ofSuccess().status(HttpStatus.OK).data("付款成功");
         } else if (order.getStatus() == OrderStatusEnum.CANCEL) {
@@ -124,7 +125,7 @@ public class OrderController {
                 Predicate[] predicates = new Predicate[predicate.size()];
                 //拼接排序规则
                 return criteriaQuery.where(predicate.toArray(predicates))
-                        .orderBy(criteriaBuilder.desc(root.get("create_time").as(Date.class)))
+                        .orderBy(criteriaBuilder.desc(root.get("createTime").as(Date.class)))
                         .getRestriction();
             }
         });

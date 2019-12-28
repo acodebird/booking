@@ -4,6 +4,23 @@
 - 页脚处有`进入后台`的入口
 - 或者直接在浏览器输入`/admin`
 
+### 数据库
+- 数据库链接地址和密码在`application.properties`文件配置
+- ！！！**云数据库密码不能上传到GitHub**
+- ！！！**云数据库密码不能上传到GitHub**
+- ！！！**云数据库密码不能上传到GitHub**
+```javascript
+#下面的是本地数据库配置
+#spring.datasource.url = jdbc:mysql://localhost:3306/db_booking?serverTimezone=Asia/Shanghai&characterEncoding=utf-8
+#spring.datasource.password = root
+#下面的是云数据库配置
+spring.datasource.url = jdbc:mysql://129.204.15.163:3306/db_booking?serverTimezone=Asia/Shanghai&characterEncoding=utf-8
+spring.datasource.password = 省略
+```
+
+### 数据录入参考地址
+- [锦江酒店Wehotel官网](https://hotel.bestwehotel.com/HotelSearch/)
+
 ## 前端源码
 [点击这里跳转到booking-ui前端源码](https://github.com/WenjieZhengJerry/booking-ui)
 
