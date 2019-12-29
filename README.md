@@ -25,7 +25,7 @@ spring.datasource.password = 省略
 [点击这里跳转到booking-ui前端源码](https://github.com/WenjieZhengJerry/booking-ui)
 
 ## 更新日志
-- 2019年12月29日：分支production为服务器部署版本，启动springboot项目直接访问项目就可以了（vue项目打包到springboot项目中,同时springboot启动器添加将刷新vue出现404空白页自定义指向index.html,由index.html去解析[vue刷新页面出现404空白页](https://blog.csdn.net/Mr_EvanChen/article/details/83625082)）
+- 2019年12月29日：分支production为服务器部署版本，启动springboot项目直接访问项目就可以了（vue项目打包到springboot项目中,同时springboot启动器添加将刷新vue出现404空白页自定义指向index.html,由index.html去解析[vue刷新页面出现404空白页](https://blog.csdn.net/Mr_EvanChen/article/details/83625082)、解决项目部署到服务器不能发送邮件、解决保存订单用户密码和盐被置空的bug）
 - 2019年12月28日：酒店添加新字段后,修改后台酒店管理各个功能、删除酒店/房间时同时删除对应的图片
 - 2019年12月27日：完成后台评论管理等功能、完成用户界面评论的分页显示等功能、完成订单评价功能；完成首页酒店多条件查询功能
 - 2019年12月25日：新增订单自动取消功能；酒店增加最低价字段显示

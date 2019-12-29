@@ -70,7 +70,7 @@ public class HotelController {
         while (iterator.hasNext()) {
             Hotel hotel = iterator.next();
             Double landprice = roomService.getLandpriceByHid(hotel.getHid());
-            if (null == hotel.getLandprice() || hotel.getLandprice() > landprice) {
+            if (landprice != null && (null == hotel.getLandprice() || hotel.getLandprice() > landprice)) {
                 hotel.setLandprice(landprice);
                 hotelService.save(hotel);
             }
@@ -98,7 +98,7 @@ public class HotelController {
         while (iterator.hasNext()) {
             Hotel hotel = iterator.next();
             Double landprice = roomService.getLandpriceByHid(hotel.getHid());
-            if (null == hotel.getLandprice() || hotel.getLandprice() > landprice) {
+            if (landprice != null && (null == hotel.getLandprice() || hotel.getLandprice() > landprice)) {
                 hotel.setLandprice(landprice);
                 hotelService.save(hotel);
             }

@@ -32,8 +32,8 @@ public class OrderServiceImpl implements OrderService {
     public Order findById(Long id) {
         Order order = orderRepository.findById(id).get();
         isCancel(order);
-        order.getUser().setSalt(null);
-        order.getUser().setUpassword(null);
+        /*order.getUser().setSalt(null);
+        order.getUser().setUpassword(null);*/
         return order;
     }
 
