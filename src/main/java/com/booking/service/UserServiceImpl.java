@@ -18,12 +18,10 @@ import com.booking.domain.User;
 import com.booking.repository.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService{//, UserDetailsService {
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
@@ -140,4 +138,21 @@ public class UserServiceImpl implements UserService {
 	public long count() {
 		return userRepository.count();
 	}
+
+//	@Override
+//	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//		System.out.println("UserService.loadUserByUsername");
+//		//查数据库
+//		UserQueryDTO userQueryDTO=new UserQueryDTO();
+//		userQueryDTO.setEmail(username);
+//		User user=userRepository.findOne(UserQueryDTO.getWhereClause(userQueryDTO)).get();
+////        User user = users.size()<1?null:users.get(0);
+////        if (null != user) {
+////        	RoleQueryDTO roleQueryDTO =new RoleQueryDTO();
+////        	roleQueryDTO.setUid(user.getUid());
+////            List<Role> roles = roleDao.findAll(roleQueryDTO.getSpecification(roleQueryDTO));
+////            user.setAuthorities(roles);
+////        }
+//		return user;
+//	}
 }

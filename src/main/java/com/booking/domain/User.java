@@ -1,25 +1,14 @@
 package com.booking.domain;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.Getter;
 import lombok.Setter;
 
-/* 
+/*
  * `uid` int(11) NOT NULL AUTO_INCREMENT COMMENT '用户主键',
   `uname` varchar(255) NOT NULL COMMENT '用户名',
   `upassword` varchar(255) NOT NULL COMMENT '用户密码',
@@ -48,7 +37,60 @@ public class User implements Serializable {
 	private Integer type; //用户类型（0表示普通用户、1表示管理员）
 	private String icon; //用户头像
 	private Boolean enable; //用户可用性（0表示不可用，1表示可用）
-	
+
+//	// 用户属于的角色，以下是用于权限管理的，请不要删除
+//	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
+//	private List<Role> authorities=new ArrayList<Role>();
+//
+//	@Override
+//	public String getUsername() {
+//		return email;
+//	}
+//	@Override
+//	public String getPassword() {
+//		return upassword;
+//	}
+//	@Override
+//	public List<Role> getAuthorities() {
+//		return authorities;
+//	}
+//
+//	public void setAuthorities(List<Role> authorities) {
+//		this.authorities = authorities;
+//	}
+//
+//	/**
+//	 * 用户账号是否过期
+//	 */
+//	@Override
+//	public boolean isAccountNonExpired() {
+//		return true;
+//	}
+//
+//	/**
+//	 * 用户账号是否被锁定
+//	 */
+//	@Override
+//	public boolean isAccountNonLocked() {
+//		return true;
+//	}
+//
+//	/**
+//	 * 用户密码是否过期
+//	 */
+//	@Override
+//	public boolean isCredentialsNonExpired() {
+//		return true;
+//	}
+//
+//	/**
+//	 * 用户是否可用
+//	 */
+//	@Override
+//	public boolean isEnabled() {
+//		return true;
+//	}
+
 //	//用户与订单建立双向关联关系，由多的一方订单维护外键
 //	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //	@JsonBackReference
@@ -64,5 +106,5 @@ public class User implements Serializable {
 		return "User [uid=" + uid + ", uname=" + uname + ", upassword=" + upassword + ", salt=" + salt + ", email="
 				+ email + ", telephone=" + telephone + ", type=" + type + ", icon=" + icon + ", enable=" + enable + "]";
 	}
-	
+
 }

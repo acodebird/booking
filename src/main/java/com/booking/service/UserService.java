@@ -7,7 +7,6 @@ import com.booking.dto.UserQueryDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -42,4 +41,6 @@ public interface UserService {
 	public boolean existsById(Long uid);
 	public boolean existsByEmail(String email);
 	public long count();
+
+//	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 }

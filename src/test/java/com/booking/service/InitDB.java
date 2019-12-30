@@ -13,29 +13,20 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.booking.domain.*;
+import com.booking.repository.*;
 import org.junit.jupiter.api.Test;
-//import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.booking.domain.Comment;
-import com.booking.domain.Hotel;
-import com.booking.domain.Order;
-import com.booking.domain.Room;
-import com.booking.domain.User;
 import com.booking.enums.CommentTypeEnum;
 import com.booking.enums.HotelTypeEnum;
 import com.booking.enums.OrderStatusEnum;
 import com.booking.enums.PayTypeEnum;
 import com.booking.enums.RoomTypeEnum;
-import com.booking.repository.CommentRepository;
-import com.booking.repository.HotelRepository;
-import com.booking.repository.OrderRepository;
-import com.booking.repository.RoomRepository;
-import com.booking.repository.UserRepository;
 import com.booking.utils.SHA2;
 
 /*
@@ -56,6 +47,10 @@ public class InitDB {
     private OrderRepository orderRepository;
     @Autowired
     private CommentRepository commentRepository;
+//    @Autowired
+//    private RoleRepository roleRepository;
+//    @Autowired
+//    private PermissionRepository permissionRepository;
     @Autowired
     private SHA2 sha;
 
@@ -67,9 +62,13 @@ public class InitDB {
 
     @Test
     public void init() throws UnsupportedEncodingException, NoSuchAlgorithmException {
+//        saveRole();
+//        savePermission();
+
         saveHotel();
         saveRoom();
         saveUser();
+    //    bind();
         saveOrder();
         saveComment();
     }
@@ -126,7 +125,7 @@ public class InitDB {
         }
         roomRepository.saveAll(rooms);
     }
-
+    @Test
     public void saveUser() throws UnsupportedEncodingException, NoSuchAlgorithmException {
         String p = "0000000000";
         List<User> users = new ArrayList<User>();
@@ -142,11 +141,31 @@ public class InitDB {
             user.setIcon("/upload/user/avatar/default_avatar.jpeg");
             user.setTelephone((String.valueOf(i) + p).substring(0, 11));
             user.setType(i % 2);
+
             user.setUname("name_" + i);
             users.add(user);
         }
         userRepository.saveAll(users);
     }
+//    @Test
+//    public void bind(){
+//        RoleQueryDTO roleQueryDTO=new RoleQueryDTO();
+//        roleQueryDTO.setName("USER");
+//        Role userRole=roleRepository.findOne(RoleQueryDTO.getSpecification(roleQueryDTO)).get();
+//        roleQueryDTO.setName("ADMIN");
+//        Role adminRole=roleRepository.findOne(RoleQueryDTO.getSpecification(roleQueryDTO)).get();
+//
+//        List<User> users= (List<User>) userRepository.findAll();
+//        for(int i=users.size()-1;i>=0;i--){
+//            User user=users.get(i);
+//            user.getAuthorities().add(userRole);
+//            if(1==user.getType()){
+//                user.getAuthorities().add(adminRole);
+//            }
+//            users.set(i,user);
+//        }
+//        userRepository.saveAll(users);
+//    }
 
     public void saveOrder() {
         List<Order> orders = new ArrayList<Order>();
@@ -223,4 +242,50 @@ public class InitDB {
             }
         };
     }
+//
+//    public void saveRole() {
+//        Role roleNormal=new Role();
+//        Role roleAdmin=new Role();
+//        roleNormal.setName("USER");
+//        roleAdmin.setName("ADMIN");
+//
+//        roleRepository.save(roleNormal);
+//        roleRepository.save(roleAdmin);
+//    }
+//
+//    @Test
+//    public void savePermission() {
+//        RoleQueryDTO roleQueryDTO=new RoleQueryDTO();
+//        roleQueryDTO.setName("USER");
+//        Role userRole=roleRepository.findOne(RoleQueryDTO.getSpecification(roleQueryDTO)).get();
+//        roleQueryDTO.setName("ADMIN");
+//        Role adminRole=roleRepository.findOne(RoleQueryDTO.getSpecification(roleQueryDTO)).get();
+//
+//        String[]userPermissionUrl={"/login/update/*"};
+//        String[]userPermissionDescription={"更新用户个人信息、密码、头像"};
+//        String[]userPermissionName={"UpdateUserInfo"};
+//
+//        String[]adminPermissionUrl={"/user/*"};
+//        String[]adminPermissionDescription={"管理员管理用户"};
+//        String[]adminPermissionName={"ManageUser"};
+//
+//        List<Permission> permissions=new ArrayList<Permission>();
+//        for(int i=userPermissionUrl.length-1;i>=0;i--){
+//            Permission permission=new Permission();
+//            permission.setDescription(userPermissionDescription[i]);
+//            permission.setUrl(userPermissionUrl[i]);
+//            permission.setRoles(userRole);
+//            permission.setName(userPermissionName[i]);
+//            permissions.add(permission);
+//        }
+//        for(int i=adminPermissionUrl.length-1;i>=0;i--){
+//            Permission permission=new Permission();
+//            permission.setDescription(adminPermissionDescription[i]);
+//            permission.setUrl(adminPermissionUrl[i]);
+//            permission.setRoles(adminRole);
+//            permission.setName(adminPermissionName[i]);
+//            permissions.add(permission);
+//        }
+//        permissionRepository.saveAll(permissions);
+//    }
 }
