@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
     public String handleHttpMessageNotReadableException(HttpMessageNotReadableException e, Model model) {
         System.out.println("参数解析失败");
         e.getMessage();
-        e.getStackTrace();
+        e.printStackTrace();
         model.addAttribute("message", e.getMessage());
         model.addAttribute("StackTrace",e.getStackTrace());
         return "exception";
@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
     public String handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e,Model model) {
         System.out.println("不支持当前请求方法");
         e.getMessage();
-        e.getStackTrace();
+        e.printStackTrace();
         model.addAttribute("message", e.getMessage());
         model.addAttribute("StackTrace", e.getStackTrace());
         return "exception";
@@ -48,7 +48,7 @@ public class GlobalExceptionHandler {
     public String handleHttpMediaTypeNotSupportedException(Exception e,Model model) {
         System.out.println("不支持当前媒体类型");
         e.getMessage();
-        e.getStackTrace();
+        e.printStackTrace();
         model.addAttribute("message", e.getMessage());
         model.addAttribute("StackTrace", e.getStackTrace());
         return "exception";
@@ -62,7 +62,7 @@ public class GlobalExceptionHandler {
     public String handleException(Exception e,Model model) {
         System.out.println("服务运行异常");
         e.getMessage();
-        e.getStackTrace();
+        e.printStackTrace();
         model.addAttribute("message", e.getMessage());
         model.addAttribute("StackTrace",e.getStackTrace());
         return "exception";
