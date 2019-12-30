@@ -1,5 +1,6 @@
 package com.booking.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.ui.Model;
@@ -18,6 +19,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public String handleHttpMessageNotReadableException(HttpMessageNotReadableException e, Model model) {
         System.out.println("参数解析失败");
+        e.getMessage();
+        e.getStackTrace();
         model.addAttribute("message", e.getMessage());
         model.addAttribute("StackTrace",e.getStackTrace());
         return "exception";
@@ -30,6 +33,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public String handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e,Model model) {
         System.out.println("不支持当前请求方法");
+        e.getMessage();
+        e.getStackTrace();
         model.addAttribute("message", e.getMessage());
         model.addAttribute("StackTrace", e.getStackTrace());
         return "exception";
@@ -42,6 +47,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public String handleHttpMediaTypeNotSupportedException(Exception e,Model model) {
         System.out.println("不支持当前媒体类型");
+        e.getMessage();
+        e.getStackTrace();
         model.addAttribute("message", e.getMessage());
         model.addAttribute("StackTrace", e.getStackTrace());
         return "exception";
@@ -54,6 +61,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public String handleException(Exception e,Model model) {
         System.out.println("服务运行异常");
+        e.getMessage();
+        e.getStackTrace();
         model.addAttribute("message", e.getMessage());
         model.addAttribute("StackTrace",e.getStackTrace());
         return "exception";

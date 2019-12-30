@@ -32,14 +32,15 @@ public class LoginController {
     // email:用户email
     // return:返回储存rsa公钥的响应实体ResponseEntity<String>
     @GetMapping(value="/isLogin")
-    public ResponseEntity<String> isLogin (HttpSession session) {
+    public ResponseEntity<String> isLogin (HttpSession session) throws Exception {
         System.out.println("isLogin");
         User user=(User)session.getAttribute(LoginServiceImpl.LOGIN_SESSION_TOKEN);
-        if(null==user){
-            System.out.println("not login");
-            return ResponseEntity.ofFailed().data("user_not_login");
-        }
-        return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(user);
+        throw new Exception("返回储存rsa公钥的响应实体ResponseEntity<String>");
+//        if(null==user){
+//            System.out.println("not login");
+//            return ResponseEntity.ofFailed().data("user_not_login");
+//        }
+//        return ResponseEntity.ofSuccess().status(HttpStatus.OK).data(user);
     }
 
     // 获取RSA加密公钥
