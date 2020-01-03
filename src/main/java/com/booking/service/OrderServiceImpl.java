@@ -32,8 +32,8 @@ public class OrderServiceImpl implements OrderService {
     public Order findById(Long id) {
         Order order = orderRepository.findById(id).get();
         isCancel(order);
-        order.getUser().setSalt(null);
-        order.getUser().setUpassword(null);
+//        order.getUser().setSalt(null);
+//        order.getUser().setUpassword(null);
         return order;
     }
 
@@ -70,8 +70,8 @@ public class OrderServiceImpl implements OrderService {
         //清空用户的密码和盐
         orders.forEach(order -> {
             isCancel(order);
-            order.getUser().setSalt(null);
-            order.getUser().setUpassword(null);
+//            order.getUser().setSalt(null);
+//            order.getUser().setUpassword(null);
         });
 
         return orders;
@@ -89,8 +89,8 @@ public class OrderServiceImpl implements OrderService {
         //清空用户的密码和盐
         orders.forEach(order -> {
             isCancel(order);
-            order.getUser().setSalt(null);
-            order.getUser().setUpassword(null);
+//            order.getUser().setSalt(null);
+//            order.getUser().setUpassword(null);
         });
 
         return orders;
