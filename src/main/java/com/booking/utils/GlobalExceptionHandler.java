@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public String handleException(Exception e,Model model) {
-        System.out.println("服务运行异常");
+        System.out.println("服务运行异常：" + e.getMessage());
         model.addAttribute("message", e.getMessage());
         model.addAttribute("StackTrace",e.getStackTrace());
         return "exception";
